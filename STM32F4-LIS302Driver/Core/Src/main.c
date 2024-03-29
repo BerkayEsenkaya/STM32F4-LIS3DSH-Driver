@@ -110,7 +110,7 @@ int main(void)
 
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
-//  LIS3DHH_Write_Reg(&hspi1, CtrlAddr,data, 1);
+
 
   /* USER CODE END 2 */
 
@@ -122,9 +122,9 @@ int main(void)
     MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
-    LIS3DHH_Read_Reg(&hspi1, _LIS3DSH_REGADDR_WHOIAM, Buff, 1);
-    LIS3DHH_Write_Reg(&hspi1,_LIS3DSH_REGADDR_CTRL1, data, 1);
-    LIS3DHH_Read_Reg(&hspi1, _LIS3DSH_REGADDR_CTRL1, Buff1, 1);
+    LIS3DSH_Read_Reg(&hspi1, _LIS3DSH_REGADDR_WHOIAM, Buff, 1);
+    LIS3DSH_REG_SET_CTRL4(&hspi1, DATARATE_HZ_100, DATA_CONT_UPDATE, AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
+    LIS3DSH_Read_Reg(&hspi1, _LIS3DSH_REGADDR_CTRL4, Buff1, 1);
     HAL_Delay(100);
   }
   /* USER CODE END 3 */

@@ -1,2 +1,4 @@
-../Core/Src/lis302.c:15:9:LIS3DHH_Read_Reg	32	static
-../Core/Src/lis302.c:27:9:LIS3DHH_Write_Reg	64	dynamic
+../Core/Src/lis302.c:13:9:LIS3DSH_Init	16	static
+../Core/Src/lis302.c:18:9:LIS3DSH_Read_Reg	32	static
+../Core/Src/lis302.c:30:9:LIS3DSH_Write_Reg	64	dynamic
+../Core/Src/lis302.c:45:9:LIS3DSH_REG_SET_CTRL4	24	static

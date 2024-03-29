@@ -11,148 +11,266 @@
 #endif /* INC_LIS302_H_ */
 
 #define _LIS3DSH_REGADDR_WHOIAM 0x0F
-#define _LIS3DSH_REGADDR_CTRL1  0x20
-
-
-typedef struct{
-  void *handle;
-  uint8_t spiNo;
-  uint8_t spiNode;
-}LIS3DHH_Module_T;
+#define _LIS3DSH_REGADDR_CTRL4  0x20
 
 typedef enum{
-  DATA_RATE_100Hz,
-  DATA_RATE_400Hz,
-}LIS302_DateRateSelection_T;
+  INT1_DATA_READY_SIGNAL_DISABLE,
+  INT1_DATA_READY_SIGNAL_ENABLE,
+}LIS3DSH_DR_EN_T;
 
 typedef enum{
-  POWER_DOWN,
-  POWER_ON,
-}LIS302_PowerControl_T;
+	INT_SIGNAL_ACTIVE_LOW,
+	INT_SIGNAL_ACTIVE_HIGH,
+}LIS3DSH_IEA_T;
 
 typedef enum{
-  RANGE_2G,
-  RANGE_8G,
-}LIS302_RangeSelection_T;
+	INT_SIGNAL_LATCH,
+	INT_SIGNAL_PULSE,
+}LIS3DSH_IEL_T;
 
 typedef enum{
-  SELFTEST_DISABLE,
-  SELFTEST_ENABLE,
-}LIS302_SelfTestSelection_T;
+	INT2_DISABLE,
+	INT2_ENABLE,
+}LIS3DSH_INT2_EN_T;
 
 typedef enum{
-  AXIS_DISABLE,
-  AXIS_ENABLE,
-}LIS302_AxisOnOff_T;
+	INT1_DISABLE,
+	INT1_ENABLE,
+}LIS3DSH_INT1_EN_T;
 
 typedef enum{
-  SPIMODE_4WIRE,
-  SPIMODE_3WIRE,
-}LIS302_SpiMode_T;
+	VECTOR_FILT_DISABLE,
+	VECTOR_FILT_ENABLE,
+}LIS3DSH_VFILT_T;
 
 typedef enum{
-  BOOT_DISABLE,
-  BOOT_ENABLE,
-}LIS302_REBOOT_T;
+	SOFT_RESET_DISABLE,
+	SOFT_RESET_ENABLE,
+}LIS3DSH_STRT_T;
 
 typedef enum{
-  INTERNALFILTER_OFF,
-  INTERNALFILTER_ON,
-}LIS302_FilterSelect_T;
+	POWER_DOWN,
+	DATARATE_HZ_3,
+	DATARATE_HZ_6,
+	DATARATE_HZ_12,
+	DATARATE_HZ_25,
+	DATARATE_HZ_50,
+	DATARATE_HZ_100,
+	DATARATE_HZ_400,
+	DATARATE_HZ_800,
+	DATARATE_HZ_1600,
+}LIS3DSH_ODR_T;
 
 typedef enum{
-  HIGHPASS_FILTER_DISABLE,
-  HIGHPASS_FILTER_ENABLE,
-}LIS302_HighPassFilterSelect_T;
+	DATA_CONT_UPDATE,
+	DATA_BLOCK,
+}LIS3DSH_BDU_T;
 
 typedef enum{
-  HIGHPASSCOEF_8,
-  HIGHPASSCOEF_4,
-  HIGHPASSCOEF_2,
-  HIGHPASSCOEF_1,
-}LIS302_HighPassCoefficent_T;
+	AXIS_Z_DISABLE,
+	AXIS_Z_ENABLE,
+}LIS3DSH_ZEN_T;
 
 typedef enum{
-  INTERRUPTACTIVE_LOW,
-  INTERRUPTACTİVE_HIGH,
-}LIS302_InterruptActiveSelec_T;
-
-typedef enum {
-  INTPAD_PUSHPULL,
-  INTPAD_OPENDRAIN,
-}LIS302_IntPadSelect_T;
+	AXIS_Y_DISABLE,
+	AXIS_Y_ENABLE,
+}LIS3DSH_YEN_T;
 
 typedef enum{
-  INT_OR,
-  INT_AND,
-}LIS302_IntCombination_T;
+	AXIS_X_DISABLE,
+	AXIS_X_ENABLE,
+}LIS3DSH_XEN_T;
 
 typedef enum{
-  IRQ_NOT_LATCH,
-  IRQ_LATCH
-}LIS302_LIR_T;
+	ANTIALIASING_FILTER_BANDWIDTH_HZ_800,
+	ANTIALIASING_FILTER_BANDWIDTH_HZ_400,
+	ANTIALIASING_FILTER_BANDWIDTH_HZ_200,
+	ANTIALIASING_FILTER_BANDWIDTH_HZ_50,
+}LIS3DSH_BW_T;
 
 typedef enum{
-  IRQ_DISABLE,
-  IRQ_ENABLE,
-}LIS302_XYZHIE_XYZLIE_T;
+	SCALE_SELECT_2G,
+	SCALE_SELECT_4G,
+	SCALE_SELECT_6G,
+	SCALE_SELECT_8G,
+	SCALE_SELECT_16G,
+}LIS3DSH_FSCALE_T;
 
 typedef enum{
-  COUNTER_RESET,
-  COUNTER_DECREMENT,
-}LIS302_DCMR_T;
+	NORMAL_MODE,
+	SELF_TEST_POSITIVE_SIGN,
+	SELF_TEST_NEGATIVE_SIGN,
+}LIS3DSH_ST_T;
 
 typedef enum{
-  CLICK_OFF,
-  CLICK_SINGLE,
-  CLICK_DOUBLE,
-  CLICK_SINGLE_DOUBLE,
-}LIS302_ClickSelect_T;
+	SPI_INTERFACE_4WIRE,
+	SPI_INTERFACE_3WIRE,
+}LIS3DSH_SIM_T;
 
 typedef enum{
-  CLICK_THR_0d5G,
-  CLICK_THR_1G,
-  CLICK_THR_1d5G,
-  CLICK_THR_2G,
-  CLICK_THR_2d5G,
-  CLICK_THR_3G,
-  CLICK_THR_3d5G,
-  CLICK_THR_4G,
-  CLICK_THR_4d5G,
-  CLICK_THR_5G,
-  CLICK_THR_5d5G,
-  CLICK_THR_6G,
-  CLICK_THR_6d5G,
-  CLICK_THR_7G,
-  CLICK_THR_7d5G,
-}LIS302_ClickThreshold_T;
+	BOOT_DISABLE,
+	BOOT_ENABLE,
+}LIS3DSH_BOOT_T;
+
+typedef enum{
+	FIFO_DISABLE,
+	FIFO_ENABLE,
+}LIS3DSH_FIFO_EN_T;
+
+typedef enum{
+	FIFO_WATERMARK_LEVEL_DISABLE,
+	FIFO_WATERMARK_LEVEL_ENABLE,
+}LIS3DSH_WTM_EN_T;
+
+typedef enum{
+	REG_ADDR_AUTO_INCREMENT_DISABLE,
+	REG_ADDR_AUTO_INCREMENT_ENABLE,
+}LIS3DSH_ADD_INC_T;
+
+typedef enum{
+	FIFO_EMPTY_INDICATION_DISABLE,
+	FIFO_EMPTY_INDICATION_ENABLE,
+}LIS3DSH_P1_EMPTY_T;
+
+typedef enum{
+	FIFO_WATERMARK_INT_DISABLE,
+	FIFO_WATERMARK_INT_ENABLE,
+}LIS3DSH_P1_WTM_T;
+
+typedef enum{
+	FIFO_OVERRUN_INT_DISABLE,
+	FIFO_OVERRUN_INT_ENABLE,
+}LIS3DSH_P1_OVERRUN_T;
+
+typedef enum{
+	BOOT_INT_DISABLE,
+	BOOT_INT_ENABLE,
+}LIS3DSH_P2_BOOT_T;
+
+typedef enum{
+	MODE_BYPASS,
+	MODE_FIFO,
+	MODE_STREAM,
+	MODE_BYPASS_STREAM,
+	NOTUSED1,
+	NOTUSED2,
+	MODE_BYPASS_FIFO,
+}LIS3DSH_FMODE_T;
+
+typedef enum{
+	HYST1_0,
+	HYST1_1,
+	HYST1_2,
+	HYST1_3,
+	HYST1_4,
+	HYST1_5,
+	HYST1_6,
+	HYST1_7,
+}LIS3DSH_HYST1_T;
+
+typedef enum{
+	SM1_INT_INT1,
+	SM1_INT_INT2,
+}LIS3DSH_SM1_PIN_T;
+
+typedef enum{
+	SM1_DISABLE,
+	SM1_ENABLE,
+}LIS3DSH_SM1_EN_T;
+
+typedef enum{
+	HYST2_0,
+	HYST2_1,
+	HYST2_2,
+	HYST2_3,
+	HYST2_4,
+	HYST2_5,
+	HYST2_6,
+	HYST2_7,
+}LIS3DSH_HYST2_T;
+
+typedef enum{
+	SM2_INT_INT1,
+	SM2_INT_INT2,
+}LIS3DSH_SM2_PIN_T;
+
+typedef enum{
+	SM2_DISABLE,
+	SM2_ENABLE,
+}LIS3DSH_SM2_EN_T;
 
 typedef union{
- struct{
-	 LIS302_AxisOnOff_T         XaxisState : 1;
-	 LIS302_AxisOnOff_T         YaxisState : 1;
-	 LIS302_AxisOnOff_T         ZaxisState : 1;
-	 LIS302_SelfTestSelection_T selftestM  : 1;
-	 LIS302_SelfTestSelection_T selftestP  : 1;
-	 LIS302_RangeSelection_T    range      : 1;
-	 LIS302_PowerControl_T      pwrctrl    : 1;
-	 LIS302_DateRateSelection_T datarate   : 1;
- };
-}LIS302_CTRL_REG1_T;
+	uint8_t CTRL1 : 8;
+	struct{
+		LIS3DSH_SM1_EN_T sm1_en   : 1;
+		uint8_t unused1           : 2;
+		LIS3DSH_SM1_PIN_T sm1_pin : 1;
+		uint8_t unused2           : 1;
+		LIS3DSH_HYST1_T hys       : 3;
+	};
+}LIS3DSH_REG_CTRL_1_T;
 
 typedef union{
- struct{
-	 LIS302_HighPassCoefficent_T   hpcoef1   : 1;
-	 LIS302_HighPassCoefficent_T   hpcoef2   : 1;
-	 LIS302_HighPassFilterSelect_T hpfilter1 : 1;
-	 LIS302_HighPassFilterSelect_T hpfilter2 : 1;
-	 LIS302_FilterSelect_T         filter    : 1;
-	 LIS302_REBOOT_T               boot      : 1;
-	 LIS302_SpiMode_T              spimode   : 1;
- };
+	uint8_t CTRL2 : 8;
+	struct{
+		LIS3DSH_SM2_EN_T sm2_en   : 1;
+		uint8_t unused1           : 2;
+		LIS3DSH_SM2_PIN_T sm2_pin : 1;
+		uint8_t unused2           : 1;
+		LIS3DSH_HYST2_T hys       : 3;
+	};
+}LIS3DSH_REG_CTRL_2_T;
+
+typedef union{
+	uint8_t CTRL3 : 8;
+	struct{
+		LIS3DSH_STRT_T reset     : 1;
+		LIS3DSH_VFILT_T vfilt    : 1;
+		LIS3DSH_INT1_EN_T int1en : 1;
+		LIS3DSH_INT2_EN_T int2en : 1;
+		LIS3DSH_IEL_T iel        : 1;
+		LIS3DSH_IEA_T iea        : 1;
+		LIS3DSH_DR_EN_T dren     : 1;
+	};
 };
 
+typedef union{
+	uint8_t CTRL4 : 8;
+	struct{
+		LIS3DSH_XEN_T xaxis_en : 1;
+		LIS3DSH_YEN_T yaxis_en : 1;
+		LIS3DSH_ZEN_T zaxis_en : 1;
+		LIS3DSH_BDU_T bdu      : 1;
+		LIS3DSH_ODR_T odr      : 4;
+	};
+}LIS3DSH_REG_CTRL_4_T;
+
+typedef union{
+	uint8_t CTRL5 : 8;
+	struct{
+		LIS3DSH_SIM_T spiMode  : 1;
+		LIS3DSH_ST_T selftest  : 2;
+		LIS3DSH_FSCALE_T scale : 3;
+		LIS3DSH_BW_T bandwith  : 2;
+	};
+}LIS3DSH_REG_CTRL_5_T;
+
+typedef union{
+	uint8_t CTRL6 : 8;
+	struct{
+		LIS3DSH_P2_BOOT_T bootint : 1;
+		LIS3DSH_P1_OVERRUN_T fifo_ovr_int : 1;
+		LIS3DSH_P1_WTM_T fifo_wtm_int : 1;
+		LIS3DSH_P1_EMPTY_T fifo_empty_int : 1;
+		LIS3DSH_ADD_INC_T reg_inc_en : 1;
+		LIS3DSH_WTM_EN_T wtm_en : 1;
+		LIS3DSH_FIFO_EN_T fifo_en : 1;
+		uint8_t boot : 1;
+	};
+}LIS3DSH_REG_CTRL_6_T;
 
 
-uint8_t LIS3DHH_Read_Reg(SPI_HandleTypeDef *handle, uint8_t RegAddr, uint8_t *rxBuff,uint8_t lenght);
-uint8_t LIS3DHH_Write_Reg(SPI_HandleTypeDef *handle, uint8_t RegAddr, uint8_t *data,uint8_t lenght);
+
+uint8_t LIS3DSH_Read_Reg(SPI_HandleTypeDef *handle, uint8_t RegAddr, uint8_t *rxBuff,uint8_t lenght);
+uint8_t LIS3DSH_Write_Reg(SPI_HandleTypeDef *handle, uint8_t RegAddr, uint8_t *data,uint8_t lenght);
+uint8_t LIS3DSH_REG_SET_CTRL4(SPI_HandleTypeDef *handle, LIS3DSH_ODR_T odrVal, LIS3DSH_BDU_T bduVal, LIS3DSH_XEN_T StateXAxis, LIS3DSH_YEN_T StateYAxis, LIS3DSH_ZEN_T StateZAxis);
