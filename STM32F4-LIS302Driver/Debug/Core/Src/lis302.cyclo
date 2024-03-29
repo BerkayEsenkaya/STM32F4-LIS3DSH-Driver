@@ -1,0 +1,2 @@
+../Core/Src/lis302.c:15:9:LIS3DHH_Read_Reg	1
+../Core/Src/lis302.c:27:9:LIS3DHH_Write_Reg	2
