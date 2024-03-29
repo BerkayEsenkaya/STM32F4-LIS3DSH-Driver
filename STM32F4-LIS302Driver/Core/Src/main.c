@@ -101,17 +101,11 @@ int main(void)
   MX_SPI1_Init();
   MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
-  uint8_t WhoIAmAddr;
-  uint8_t CtrlAddr;
   uint8_t data[1];
   uint8_t Buff[1];
   uint8_t Buff1[1];
   Buff[0] = 0;
   Buff1[0] = 0;
-  uint8_t Info;
-  Info = 0x0D;
-  WhoIAmAddr = 0x0F;
-  CtrlAddr = 0x20;
   data[0] = 0x57;
 
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
@@ -128,15 +122,9 @@ int main(void)
     MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
-    LIS3DHH_Read_Reg(&hspi1, _LIS3DHH_REGADDR_WHOIAM, Buff, 1);
-    LIS3DHH_Write_Reg(&hspi1,_LIS3DHH_REGADDR_CTRL1, data, 1);
-    LIS3DHH_Read_Reg(&hspi1, CtrlAddr, Buff1, 1);
-//    HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_RESET);
-//    HAL_SPI_TransmitReceive(&hspi1, WhoIAmAddr,Buff, 1, 50);
-//    HAL_SPI_Receive(&hspi1, Buff, 1, 50);
-//    HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
-//    LIS3DHH_Read_Reg(&hspi1, WhoIAmAddr, Buff, 1);
-//    LIS3DHH_Read_Reg(&hspi1, Info, Buff1, 1);
+    LIS3DHH_Read_Reg(&hspi1, _LIS3DSH_REGADDR_WHOIAM, Buff, 1);
+    LIS3DHH_Write_Reg(&hspi1,_LIS3DSH_REGADDR_CTRL1, data, 1);
+    LIS3DHH_Read_Reg(&hspi1, _LIS3DSH_REGADDR_CTRL1, Buff1, 1);
     HAL_Delay(100);
   }
   /* USER CODE END 3 */

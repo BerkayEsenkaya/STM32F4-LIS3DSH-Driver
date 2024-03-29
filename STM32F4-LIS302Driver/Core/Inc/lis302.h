@@ -10,8 +10,8 @@
 
 #endif /* INC_LIS302_H_ */
 
-#define _LIS3DHH_REGADDR_WHOIAM 0x0F
-#define _LIS3DHH_REGADDR_CTRL1  0x20
+#define _LIS3DSH_REGADDR_WHOIAM 0x0F
+#define _LIS3DSH_REGADDR_CTRL1  0x20
 
 
 typedef struct{
