@@ -19,11 +19,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_host.h"
-#include "lis302.h"
-#include "spi.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lis302.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,8 +46,6 @@ I2C_HandleTypeDef hi2c1;
 I2S_HandleTypeDef hi2s3;
 
 SPI_HandleTypeDef hspi1;
-
-SPI_Handle_T SPI_1;
 
 /* USER CODE BEGIN PV */
 
@@ -112,19 +109,18 @@ int main(void)
   uint8_t read5[1];
   uint8_t dataY[2];
   uint8_t dataZ[2];
+  uint8_t dataTemp[1];
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
-  LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_WHOIAM, read1, 1);
-  LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_INFO1, read1, 1);
-  LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_INFO2, read1, 1);
+
   LIS3DSH_Reg_Set_Ctrl3(INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_HIGH, INT_SIGNAL_PULSE, INT2_DISABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
-  LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_CTRL3, read1, 1);
-  LIS3DSH_Reg_Set_Ctrl4(DATARATE_HZ_100,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
-  LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_CTRL4, read2, 1);
-  LIS3DSH_Reg_Set_Ctrl5(ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_16G, NORMAL_MODE, SPI_INTERFACE_4WIRE);
-  LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_CTRL5, read3, 1);
+
+  LIS3DSH_Reg_Set_Ctrl4(DATARATE_HZ_3,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
+
+  LIS3DSH_Reg_Set_Ctrl5(ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_8G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
+
   LIS3DSH_Reg_Set_Ctrl6(BOOT_DISABLE, FIFO_DISABLE, FIFO_WATERMARK_LEVEL_DISABLE, REG_ADDR_AUTO_INCREMENT_DISABLE, FIFO_EMPTY_INDICATION_DISABLE, FIFO_WATERMARK_INT_DISABLE, FIFO_OVERRUN_INT_DISABLE, BOOT_INT_DISABLE);
-  LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_CTRL6, read4, 1);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -133,11 +129,13 @@ int main(void)
   {
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
-    LIS3DSH_Read_Accmeter_Data(dataX, dataY, dataZ);
 
     /* USER CODE BEGIN 3 */
+   LIS3DSH_Read_Accmeter_Data();
+   LIS3DSH_Read_Temperature_Data();
 
-    HAL_Delay(100);
+   LIS3DSH_ConvertData();
+   HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
@@ -344,12 +342,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
   HAL_GPIO_Init(PDM_OUT_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pin : BOOT1_Pin */
   GPIO_InitStruct.Pin = BOOT1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -378,6 +370,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(OTG_FS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : MEMS_INT1_Pin */
+  GPIO_InitStruct.Pin = MEMS_INT1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(MEMS_INT1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MEMS_INT2_Pin */
   GPIO_InitStruct.Pin = MEMS_INT2_Pin;

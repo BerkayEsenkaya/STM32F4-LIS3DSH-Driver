@@ -12,8 +12,15 @@
 
 #endif /* INC_LIS302_H_ */
 
-#define _LIS3DSH_REGADDR_INFO1 0x0D
-#define _LIS3DSH_REGADDR_INFO2 0x0E
+#define _LIS3DSH_CONVERT_DATA_CONST_16G 73
+#define _LIS3DSH_CONVERT_DATA_CONST_8G  24
+#define _LIS3DSH_CONVERT_DATA_CONST_6G  18
+#define _LIS3DSH_CONVERT_DATA_CONST_4G  12
+#define _LIS3DSH_CONVERT_DATA_CONST_2G  6
+#define _LIS3DSH_CONVERT_DATA_CONST_DIVIDER 100;
+
+#define _LIS3DSH_REGADDR_INFO1  0x0D
+#define _LIS3DSH_REGADDR_INFO2  0x0E
 #define _LIS3DSH_REGADDR_WHOIAM 0x0F
 #define _LIS3DSH_REGADDR_CTRL1  0x21
 #define _LIS3DSH_REGADDR_CTRL2  0x22
@@ -27,10 +34,35 @@
 #define _LIS3DSH_REGADDR_OUTPUT_AXIS_YH 0x2B
 #define _LIS3DSH_REGADDR_OUTPUT_AXIS_ZL 0x2C
 #define _LIS3DSH_REGADDR_OUTPUT_AXIS_ZH 0x2D
-#define _LIS3DSH_REGADDR_OUTPUT_TEMPERATURE 0x27
+#define _LIS3DSH_REGADDR_OUTPUT_TEMPERATURE 0x0C
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_X 0x10
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_Y 0x11
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_Z 0x12
+
+#define AXIS_X 0
+#define AXIS_Y 1
+#define AXIS_Z 2
+
+typedef struct{
+	uint16_t raw;
+	uint16_t filtered;
+	uint32_t mg;
+}LIS3DSH_ACC_Data_T;
+
+typedef struct{
+	uint16_t raw;
+	uint16_t filtered;
+	uint8_t celcius;
+}LIS3DSH_TEMP_Data_T;
+
+typedef struct{
+	uint8_t scale;
+}LIS3DSH_SaveSetting_T;
+
+typedef struct{
+	LIS3DSH_ACC_Data_T axis[3];
+	LIS3DSH_TEMP_Data_T temperature;
+}LIS3DSH_RESULTS_T;
 
 typedef struct{
 	uint8_t spiNo;
@@ -38,8 +70,8 @@ typedef struct{
 }LIS3DSH_Module_T;
 
 typedef enum{
-  INT1_DATA_READY_SIGNAL_DISABLE,
-  INT1_DATA_READY_SIGNAL_ENABLE,
+    INT1_DATA_READY_SIGNAL_DISABLE,
+    INT1_DATA_READY_SIGNAL_ENABLE,
 }LIS3DSH_DR_EN_T;
 
 typedef enum{
@@ -304,4 +336,6 @@ uint8_t LIS3DSH_Reg_Set_Ctrl3(LIS3DSH_DR_EN_T dren, LIS3DSH_IEA_T iea, LIS3DSH_I
 uint8_t LIS3DSH_Reg_Set_Ctrl4(LIS3DSH_ODR_T odrVal, LIS3DSH_BDU_T bduVal, LIS3DSH_XEN_T StateXAxis, LIS3DSH_YEN_T StateYAxis, LIS3DSH_ZEN_T StateZAxis );
 uint8_t LIS3DSH_Reg_Set_Ctrl5(LIS3DSH_BW_T bw,LIS3DSH_FSCALE_T scale, LIS3DSH_ST_T selftest ,LIS3DSH_SIM_T spiMode );
 uint8_t LIS3DSH_Reg_Set_Ctrl6(uint8_t boot, LIS3DSH_FIFO_EN_T fifo_en, LIS3DSH_WTM_EN_T wtm_en, LIS3DSH_ADD_INC_T reg_inc_en, LIS3DSH_P1_EMPTY_T fifo_empty_int, LIS3DSH_P1_WTM_T fifo_wtm_int, LIS3DSH_P1_OVERRUN_T fifo_ovr_int, LIS3DSH_P2_BOOT_T bootint);
-uint8_t LIS3DSH_Read_Accmeter_Data(uint8_t *data_X_buff, uint8_t *data_Y_buff, uint8_t *data_Z_buff);
+uint8_t LIS3DSH_Read_Accmeter_Data();
+uint8_t LIS3DSH_Read_Temperature_Data();
+uint8_t LIS3DSH_ConvertData();
