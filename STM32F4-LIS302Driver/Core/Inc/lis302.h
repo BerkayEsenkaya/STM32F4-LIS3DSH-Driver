@@ -5,13 +5,37 @@
  *      Author: Berkay Esenkaya
  */
 
+
+
 #ifndef INC_LIS302_H_
 #define INC_LIS302_H_
 
 #endif /* INC_LIS302_H_ */
 
+#define _LIS3DSH_REGADDR_INFO1 0x0D
+#define _LIS3DSH_REGADDR_INFO2 0x0E
 #define _LIS3DSH_REGADDR_WHOIAM 0x0F
+#define _LIS3DSH_REGADDR_CTRL1  0x21
+#define _LIS3DSH_REGADDR_CTRL2  0x22
+#define _LIS3DSH_REGADDR_CTRL3  0x23
 #define _LIS3DSH_REGADDR_CTRL4  0x20
+#define _LIS3DSH_REGADDR_CTRL5  0x24
+#define _LIS3DSH_REGADDR_CTRL6  0x25
+#define _LIS3DSH_REGADDR_OUTPUT_AXIS_XL 0x28
+#define _LIS3DSH_REGADDR_OUTPUT_AXIS_XH 0x29
+#define _LIS3DSH_REGADDR_OUTPUT_AXIS_YL 0x2A
+#define _LIS3DSH_REGADDR_OUTPUT_AXIS_YH 0x2B
+#define _LIS3DSH_REGADDR_OUTPUT_AXIS_ZL 0x2C
+#define _LIS3DSH_REGADDR_OUTPUT_AXIS_ZH 0x2D
+#define _LIS3DSH_REGADDR_OUTPUT_TEMPERATURE 0x27
+#define _LIS3DSH_REGADDR_OFFSET_AXIS_X 0x10
+#define _LIS3DSH_REGADDR_OFFSET_AXIS_Y 0x11
+#define _LIS3DSH_REGADDR_OFFSET_AXIS_Z 0x12
+
+typedef struct{
+	uint8_t spiNo;
+	uint8_t spiNode;
+}LIS3DSH_Module_T;
 
 typedef enum{
   INT1_DATA_READY_SIGNAL_DISABLE,
@@ -232,7 +256,7 @@ typedef union{
 		LIS3DSH_IEA_T iea        : 1;
 		LIS3DSH_DR_EN_T dren     : 1;
 	};
-};
+}LIS3DSH_REG_CTRL_3_T;
 
 typedef union{
 	uint8_t CTRL4 : 8;
@@ -271,6 +295,13 @@ typedef union{
 
 
 
-uint8_t LIS3DSH_Read_Reg(SPI_HandleTypeDef *handle, uint8_t RegAddr, uint8_t *rxBuff,uint8_t lenght);
-uint8_t LIS3DSH_Write_Reg(SPI_HandleTypeDef *handle, uint8_t RegAddr, uint8_t *data,uint8_t lenght);
-uint8_t LIS3DSH_REG_SET_CTRL4(SPI_HandleTypeDef *handle, LIS3DSH_ODR_T odrVal, LIS3DSH_BDU_T bduVal, LIS3DSH_XEN_T StateXAxis, LIS3DSH_YEN_T StateYAxis, LIS3DSH_ZEN_T StateZAxis);
+
+uint8_t LIS3DSH_Read_Reg( uint8_t RegAddr, uint8_t *rxBuff,uint8_t lenght);
+uint8_t LIS3DSH_Write_Reg( uint8_t RegAddr, uint8_t *data,uint8_t lenght);
+uint8_t LIS3DSH_Reg_Set_Ctrl1(LIS3DSH_HYST1_T hys, LIS3DSH_SM1_PIN_T sm1_pin, LIS3DSH_SM1_EN_T sm1_en);
+uint8_t LIS3DSH_Reg_Set_Ctrl2(LIS3DSH_HYST2_T hys, LIS3DSH_SM2_PIN_T sm2_pin, LIS3DSH_SM2_EN_T sm2_en);
+uint8_t LIS3DSH_Reg_Set_Ctrl3(LIS3DSH_DR_EN_T dren, LIS3DSH_IEA_T iea, LIS3DSH_IEL_T iel, LIS3DSH_INT2_EN_T int2_en, LIS3DSH_INT1_EN_T int1_en, LIS3DSH_VFILT_T Vfilt, LIS3DSH_STRT_T reset);
+uint8_t LIS3DSH_Reg_Set_Ctrl4(LIS3DSH_ODR_T odrVal, LIS3DSH_BDU_T bduVal, LIS3DSH_XEN_T StateXAxis, LIS3DSH_YEN_T StateYAxis, LIS3DSH_ZEN_T StateZAxis );
+uint8_t LIS3DSH_Reg_Set_Ctrl5(LIS3DSH_BW_T bw,LIS3DSH_FSCALE_T scale, LIS3DSH_ST_T selftest ,LIS3DSH_SIM_T spiMode );
+uint8_t LIS3DSH_Reg_Set_Ctrl6(uint8_t boot, LIS3DSH_FIFO_EN_T fifo_en, LIS3DSH_WTM_EN_T wtm_en, LIS3DSH_ADD_INC_T reg_inc_en, LIS3DSH_P1_EMPTY_T fifo_empty_int, LIS3DSH_P1_WTM_T fifo_wtm_int, LIS3DSH_P1_OVERRUN_T fifo_ovr_int, LIS3DSH_P2_BOOT_T bootint);
+uint8_t LIS3DSH_Read_Accmeter_Data(uint8_t *data_X_buff, uint8_t *data_Y_buff, uint8_t *data_Z_buff);

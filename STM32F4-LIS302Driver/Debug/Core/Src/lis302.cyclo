@@ -1,4 +1,10 @@
-../Core/Src/lis302.c:13:9:LIS3DSH_Init	1
-../Core/Src/lis302.c:18:9:LIS3DSH_Read_Reg	1
-../Core/Src/lis302.c:30:9:LIS3DSH_Write_Reg	2
-../Core/Src/lis302.c:45:9:LIS3DSH_REG_SET_CTRL4	1
+../Core/Src/lis302.c:11:9:LIS3DSH_Init	1
+../Core/Src/lis302.c:16:9:LIS3DSH_Read_Reg	1
+../Core/Src/lis302.c:24:9:LIS3DSH_Write_Reg	2
+../Core/Src/lis302.c:36:9:LIS3DSH_Reg_Set_Ctrl1	1
+../Core/Src/lis302.c:46:9:LIS3DSH_Reg_Set_Ctrl2	1
+../Core/Src/lis302.c:56:9:LIS3DSH_Reg_Set_Ctrl3	1
+../Core/Src/lis302.c:70:9:LIS3DSH_Reg_Set_Ctrl4	1
+../Core/Src/lis302.c:82:9:LIS3DSH_Reg_Set_Ctrl5	1
+../Core/Src/lis302.c:93:9:LIS3DSH_Reg_Set_Ctrl6	1
+../Core/Src/lis302.c:108:9:LIS3DSH_Read_Accmeter_Data	1

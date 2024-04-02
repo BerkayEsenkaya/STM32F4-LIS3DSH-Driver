@@ -1,0 +1,3 @@
+../Core/Src/spi.c:8:9:SPI_TransmitReceive	24	static
+../Core/Src/spi.c:22:9:SPI_Com_Active	16	static
+../Core/Src/spi.c:26:9:SPI_Com_Deactive	16	static
