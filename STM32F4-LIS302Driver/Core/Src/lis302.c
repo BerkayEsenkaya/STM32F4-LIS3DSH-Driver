@@ -17,7 +17,7 @@
  ******************************************************************************/
 LIS3DSH_RESULTS_T results;
 LIS3DSH_SaveSetting_T save;
-
+LIS3DSH_Filter_T Filter;
 
 /******************************************************************************
  *** FUNCTIONS
@@ -27,11 +27,13 @@ LIS3DSH_SaveSetting_T save;
 uint8_t LIS3DSH_Init(){
 	uint8_t whoIam[1];
 	LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_WHOIAM, whoIam, 1);
-	if(whoIam[0] == _LIS3DSH_ID){
+	if(whoIam[0] == _LIS3DSH_ID){  /* Communication is successful*/
 		LIS3DSH_AccalometerSoftReset();
         return _LIS3DSH_OK;
 	}else{
-		return _LIS3DSH_NOT_OK;
+		while(1){
+			/* Communication is fail*/
+		}
 	}
 }
 
@@ -170,21 +172,30 @@ uint8_t LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(uint8_t regAddr, uint8_t *WrittenData
 uint8_t LIS3DSH_Read_Accmeter_Data(){
 	uint8_t temph[1];
 	uint8_t templ[1];
-
+    temph[0] = 0;
+    templ[0] = 0;
 	LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_XH, temph,1);
 	LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_XL, templ,1);
-    results.axis[AXIS_X].raw = (templ[0]<<8);
-    results.axis[AXIS_X].raw |= temph[0];
-
+    results.axis[AXIS_X].raw = (temph[0]<<8);
+    results.axis[AXIS_X].raw |= templ[0];
+    temph[0] = 0;
+    templ[0] = 0;
     LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_YH, temph,1);
     LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_YL, templ,1);
-    results.axis[AXIS_Y].raw = (templ[0]<<8);
-    results.axis[AXIS_Y].raw |= temph[0];
-
+    results.axis[AXIS_Y].raw = (temph[0]<<8);
+    results.axis[AXIS_Y].raw |= templ[0];
+    temph[0] = 0;
+    templ[0] = 0;
     LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_ZH, temph,1);
     LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_ZL, templ,1);
-    results.axis[AXIS_Z].raw = (templ[0]<<8);
-    results.axis[AXIS_Z].raw |= temph[0];
+    results.axis[AXIS_Z].raw = (temph[0]<<8);
+    results.axis[AXIS_Z].raw |= templ[0];
+
+    LIS3DSH_AvarageFilter(AXIS_X);
+    LIS3DSH_AvarageFilter(AXIS_Y);
+    LIS3DSH_AvarageFilter(AXIS_Z);
+
+    LIS3DSH_ConvertData();
 }
 
 /** \brief
@@ -212,21 +223,45 @@ uint8_t LIS3DSH_ConvertData(){
     case SCALE_SELECT_16G :convertMltply = _LIS3DSH_CONVERT_DATA_CONST_16G;
     break;
     }
-    if(results.axis[AXIS_X].raw >= 32767){
-    	results.axis[AXIS_X].raw = 65535 - results.axis[AXIS_X].raw;
+    if(results.axis[AXIS_X].filtered >= 32767){
+    	results.axis[AXIS_X].filtered = 65535 - results.axis[AXIS_X].filtered;
     }
-    if(results.axis[AXIS_Y].raw >= 32767){
-        	results.axis[AXIS_Y].raw = 65535 - results.axis[AXIS_Y].raw;
+    if(results.axis[AXIS_Y].filtered >= 32767){
+        	results.axis[AXIS_Y].filtered = 65535 - results.axis[AXIS_Y].filtered;
     }
-    if(results.axis[AXIS_Z].raw >= 32767){
-        	results.axis[AXIS_Z].raw = 65535 - results.axis[AXIS_Z].raw;
+    if(results.axis[AXIS_Z].filtered >= 32767){
+        	results.axis[AXIS_Z].filtered = 65535 - results.axis[AXIS_Z].filtered;
     }
-    results.axis[AXIS_X].mg = results.axis[AXIS_X].raw * convertMltply;
+    results.axis[AXIS_X].mg = results.axis[AXIS_X].filtered * convertMltply;
     results.axis[AXIS_X].mg = results.axis[AXIS_X].mg / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
 
-    results.axis[AXIS_Y].mg = results.axis[AXIS_Y].raw * convertMltply;
+    results.axis[AXIS_Y].mg = results.axis[AXIS_Y].filtered * convertMltply;
     results.axis[AXIS_Y].mg = results.axis[AXIS_Y].mg / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
 
-    results.axis[AXIS_Z].mg = results.axis[AXIS_Z].raw * convertMltply;
+    results.axis[AXIS_Z].mg = results.axis[AXIS_Z].filtered * convertMltply;
     results.axis[AXIS_Z].mg = results.axis[AXIS_Z].mg / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
+}
+
+/** \brief
+ */
+uint8_t LIS3DSH_AvarageFilter(uint8_t axis){
+	uint8_t i;
+	if(Filter.AvarageFilter[axis].entered == 0){
+		Filter.AvarageFilter[axis].sum = 0;
+		Filter.AvarageFilter[axis].data[Filter.AvarageFilter[axis].entered] = results.axis[axis].raw;
+		Filter.AvarageFilter[axis].entered = 1;
+		return 1;
+	}
+	Filter.AvarageFilter[axis].data[ Filter.AvarageFilter[axis].entered ] = results.axis[axis].raw;
+
+
+	Filter.AvarageFilter[axis].entered += 1;
+	if(Filter.AvarageFilter[axis].entered == 5){
+		for(i=0; i < (Filter.AvarageFilter[axis].entered); i++ ){
+				Filter.AvarageFilter[axis].sum +=  Filter.AvarageFilter[axis].data[i];
+			}
+		results.axis[axis].filtered = Filter.AvarageFilter[axis].sum / Filter.AvarageFilter[axis].entered;
+		Filter.AvarageFilter[axis].entered = 0;
+	}
+
 }

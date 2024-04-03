@@ -47,6 +47,8 @@
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_Y 0x11
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_Z 0x12
 
+#define _LIS3DSH_FILTERSIZE 5
+
 #define AXIS_X 0
 #define AXIS_Y 1
 #define AXIS_Z 2
@@ -80,6 +82,15 @@ typedef struct{
 	uint8_t spiNode;
 }LIS3DSH_Module_T;
 
+typedef struct{
+	uint8_t entered;
+	uint64_t sum;
+	uint16_t data[_LIS3DSH_FILTERSIZE];
+}LIS3DSH_AvgFilter_T;
+
+typedef struct{
+	LIS3DSH_AvgFilter_T AvarageFilter[4];
+}LIS3DSH_Filter_T;
 
 /******************************************************************************
  *** ENUMS
@@ -344,6 +355,7 @@ typedef union{
 	};
 }LIS3DSH_REG_CTRL_6_T;
 
+
 /******************************************************************************
  *** FUNCTION PROTOTYPES
  ******************************************************************************/
@@ -460,4 +472,4 @@ uint8_t LIS3DSH_Read_Temperature_Data();
  */
 uint8_t LIS3DSH_ConvertData();
 
-
+uint8_t LIS3DSH_AvarageFilter(uint8_t axis);

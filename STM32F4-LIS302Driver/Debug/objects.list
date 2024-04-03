@@ -1,4 +1,3 @@
-"./Core/Src/filter.o"
 "./Core/Src/lis302.o"
 "./Core/Src/main.o"
 "./Core/Src/spi.o"
