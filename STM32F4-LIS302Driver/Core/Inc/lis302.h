@@ -12,6 +12,14 @@
 
 #endif /* INC_LIS302_H_ */
 
+/******************************************************************************
+ *** DEFINES
+ ******************************************************************************/
+#define _LIS3DSH_ID 0x3F
+
+#define _LIS3DSH_OK 1
+#define _LIS3DSH_NOT_OK 0
+
 #define _LIS3DSH_CONVERT_DATA_CONST_16G 73
 #define _LIS3DSH_CONVERT_DATA_CONST_8G  24
 #define _LIS3DSH_CONVERT_DATA_CONST_6G  18
@@ -43,6 +51,9 @@
 #define AXIS_Y 1
 #define AXIS_Z 2
 
+/******************************************************************************
+ *** STRUCTS
+ ******************************************************************************/
 typedef struct{
 	uint16_t raw;
 	uint16_t filtered;
@@ -69,6 +80,10 @@ typedef struct{
 	uint8_t spiNode;
 }LIS3DSH_Module_T;
 
+
+/******************************************************************************
+ *** ENUMS
+ ******************************************************************************/
 typedef enum{
     INT1_DATA_READY_SIGNAL_DISABLE,
     INT1_DATA_READY_SIGNAL_ENABLE,
@@ -255,6 +270,10 @@ typedef enum{
 	SM2_ENABLE,
 }LIS3DSH_SM2_EN_T;
 
+
+/******************************************************************************
+ *** UNIONS
+ ******************************************************************************/
 typedef union{
 	uint8_t CTRL1 : 8;
 	struct{
@@ -325,17 +344,120 @@ typedef union{
 	};
 }LIS3DSH_REG_CTRL_6_T;
 
+/******************************************************************************
+ *** FUNCTION PROTOTYPES
+ ******************************************************************************/
+/** \brief Controlled the LIS3DSH ID and reset the LIS3DSH.
+ * \param  nothing.
+ * \return nothing.
+ */
+uint8_t LIS3DSH_Init();
 
-
-
+/** \brief Read the LIS3DSH registers value.
+ * \param  RegAddr : Address of the register to be read.
+ * \param  *rxBuff : buffer where the data to be read will be placed.
+ * \param  lenght : lenght of the data which to be read from LIS3DSH registers.
+ * \return nothing.
+ */
 uint8_t LIS3DSH_Read_Reg( uint8_t RegAddr, uint8_t *rxBuff,uint8_t lenght);
+
+/** \brief Write to the LIS3DSH registers.
+ * \param  RegAddr : Address of the register to be write.
+ * \param  *data : Data to be written to lıs3dsh register.
+ * \param  lenght : lenght of the data which to be write to LIS3DSH registers.
+ * \return nothing.
+ */
 uint8_t LIS3DSH_Write_Reg( uint8_t RegAddr, uint8_t *data,uint8_t lenght);
+
+/** \brief combines the entered settings appropriately and writes it to the CTRL1 register.
+ * \param hys : Hysteresis unsigned value to be added or subtracted from threshold value in SM1.
+ * \param sm1_pin : Set the interrupt routed which interrupt
+ * \param sm1_en : SM1 enable or disable.
+ * \return nothing
+ */
 uint8_t LIS3DSH_Reg_Set_Ctrl1(LIS3DSH_HYST1_T hys, LIS3DSH_SM1_PIN_T sm1_pin, LIS3DSH_SM1_EN_T sm1_en);
+
+/** \brief combines the entered settings appropriately and writes it to the CTRL2 register.
+ * \param hys : Hysteresis unsigned value to be added or subtracted from threshold value in SM2.
+ * \param sm2_pin : Set the interrupt routed which interrupt
+ * \param sm2_en : SM2 enable or disable.
+ * \return nothing
+ */
 uint8_t LIS3DSH_Reg_Set_Ctrl2(LIS3DSH_HYST2_T hys, LIS3DSH_SM2_PIN_T sm2_pin, LIS3DSH_SM2_EN_T sm2_en);
+
+/** \brief combines the entered settings appropriately and writes it to the CTRL3 register.
+ * \param dr_en : Data Ready signal enable to INT1.
+ * \param iea : Selection the polarity of interrupt signal.
+ * \param iel : Selection the latch or pulse of interrupt signal.
+ * \param int2_en : Selection of the Interrupt 2 enabled or disabled.
+ * \param int1_en : Selection of the Interrupt 1 enabled or disabled.
+ * \param Vfilt : Selection of the Vector filter enabled or disabled.
+ * \param reset : Soft reset enable or disable.
+ * \return nothing
+ */
 uint8_t LIS3DSH_Reg_Set_Ctrl3(LIS3DSH_DR_EN_T dren, LIS3DSH_IEA_T iea, LIS3DSH_IEL_T iel, LIS3DSH_INT2_EN_T int2_en, LIS3DSH_INT1_EN_T int1_en, LIS3DSH_VFILT_T Vfilt, LIS3DSH_STRT_T reset);
+
+/** \brief combines the entered settings appropriately and writes it to the CTRL4 register.
+ * \param odrVal : Output data rate and power mode selection.
+ * \param bdu : Selection the uptading data block or continuous.
+ * \param StateXAxis : Selection the X axis enable or disable.
+ * \param StateYAxis : Selection the Y axis enable or disable.
+ * \param StateZAxis : Selection the Z axis enable or disable.
+ * \return nothing
+ */
 uint8_t LIS3DSH_Reg_Set_Ctrl4(LIS3DSH_ODR_T odrVal, LIS3DSH_BDU_T bduVal, LIS3DSH_XEN_T StateXAxis, LIS3DSH_YEN_T StateYAxis, LIS3DSH_ZEN_T StateZAxis );
+
+/** \brief combines the entered settings appropriately and writes it to the CTRL5 register.
+ * \param bw :  Selection the bandwidth of the Anti-aliasing filter.
+ * \param scale : Selection the scale.
+ * \param selftest : Selection the selftest enable or disable.
+ * \param spiMode : Selection the SPI mode 3 wire or 4 wire.
+ * \return nothing
+ */
 uint8_t LIS3DSH_Reg_Set_Ctrl5(LIS3DSH_BW_T bw,LIS3DSH_FSCALE_T scale, LIS3DSH_ST_T selftest ,LIS3DSH_SIM_T spiMode );
+
+/** \brief combines the entered settings appropriately and writes it to the CTRL6 register.
+ * \param boot :  Force reboot, cleared as soon as the reboot is finished. Active high.
+ * \param fifo_en : Selection the FIFO enable or disable.
+ * \param wtm_en : Selection the FIFO Watermark level using enable or disable.
+ * \param reg_inc_en : Register address automatically incremented during a multiple byte access with a serial interface.
+ * \param fifo_empty_int : Selection the FIFO Empty indication on int1 enable or disable.
+ * \param fifo_wtm_int : Selection the FIFO Watermark interrupt on int1 enable or disable.
+ * \param fifo_ovr_int : Selection the FIFO overrun interrupt on int1 enable or disable.
+ * \param bootint : Selection the BOOT interrupt on int2 enable or disable.
+ * \return nothing
+ */
 uint8_t LIS3DSH_Reg_Set_Ctrl6(uint8_t boot, LIS3DSH_FIFO_EN_T fifo_en, LIS3DSH_WTM_EN_T wtm_en, LIS3DSH_ADD_INC_T reg_inc_en, LIS3DSH_P1_EMPTY_T fifo_empty_int, LIS3DSH_P1_WTM_T fifo_wtm_int, LIS3DSH_P1_OVERRUN_T fifo_ovr_int, LIS3DSH_P2_BOOT_T bootint);
+
+/** \brief Reset the accalometer used to CTRL2 register softreset bit.
+ * \param  nothing.
+ * \return nothing.
+ */
+uint8_t LIS3DSH_AccalometerSoftReset();
+
+/** \brief Controlled the data which written to register. Read the written data from register if read data and written data is equal return 1.
+ * \param  regAddr  : Addresses the register of written data.
+ * \param  *WrittenData : Value of written data.
+ * \return nothing.
+ */
+uint8_t LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(uint8_t regAddr, uint8_t *WrittenData);
+
+/** \brief Read the OUT_X, OUT_Y, OUT_Z registers so read the accalometer x,y,z output data.
+ * \param  nothing.
+ * \return nothing.
+ */
 uint8_t LIS3DSH_Read_Accmeter_Data();
+
+/** \brief Read the OUT_T register so read the temperature output data.
+ * \param  nothing.
+ * \return nothing.
+ */
 uint8_t LIS3DSH_Read_Temperature_Data();
+
+/** \brief Convert the data to mili g from binary code.
+ * \param  nothing.
+ * \return nothing.
+ */
 uint8_t LIS3DSH_ConvertData();
+
+
