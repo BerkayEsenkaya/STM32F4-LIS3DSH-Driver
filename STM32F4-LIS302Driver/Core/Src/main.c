@@ -48,7 +48,7 @@ I2S_HandleTypeDef hi2s3;
 SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN PV */
-
+extern LIS3DSH_RESULTS_T results;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,6 +101,7 @@ int main(void)
   MX_SPI1_Init();
   MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
+
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
 
@@ -123,6 +124,31 @@ int main(void)
     /* USER CODE BEGIN 3 */
    LIS3DSH_Read_Accmeter_Data();
    LIS3DSH_Read_Temperature_Data();
+
+   if(results.axis[AXIS_X].mg >= 350){
+	   if(results.axis[AXIS_X].sign == 1){
+		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
+	   }else{
+		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
+	   }
+   }else{
+	   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
+	   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
+   }
+
+   if(results.axis[AXIS_Y].mg >= 350){
+   	   if(results.axis[AXIS_Y].sign == 1){
+   		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+   	   }else{
+   		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
+   	   }
+   }else{
+   	   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+   	   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
+   }
+
+
+
    HAL_Delay(10);
   }
   /* USER CODE END 3 */

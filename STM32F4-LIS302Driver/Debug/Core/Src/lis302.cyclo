@@ -9,7 +9,8 @@
 ../Core/Src/lis302.c:135:9:LIS3DSH_Reg_Set_Ctrl6	1
 ../Core/Src/lis302.c:152:9:LIS3DSH_AccalometerSoftReset	1
 ../Core/Src/lis302.c:158:9:LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT	2
-../Core/Src/lis302.c:172:9:LIS3DSH_Read_Accmeter_Data	1
-../Core/Src/lis302.c:203:9:LIS3DSH_Read_Temperature_Data	1
-../Core/Src/lis302.c:212:9:LIS3DSH_ConvertData	9
-../Core/Src/lis302.c:247:9:LIS3DSH_AvarageFilter	4
+../Core/Src/lis302.c:172:9:LIS3DSH_Read_Accmeter_Data	4
+../Core/Src/lis302.c:222:9:LIS3DSH_Read_Temperature_Data	1
+../Core/Src/lis302.c:230:9:LIS3DSH_ConvertData	6
+../Core/Src/lis302.c:257:9:LIS3DSH_AvarageFilter	4
+../Core/Src/lis302.c:280:9:LIS3DSH_OtoCalib	9

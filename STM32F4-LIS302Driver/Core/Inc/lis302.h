@@ -20,12 +20,12 @@
 #define _LIS3DSH_OK 1
 #define _LIS3DSH_NOT_OK 0
 
-#define _LIS3DSH_CONVERT_DATA_CONST_16G 73
-#define _LIS3DSH_CONVERT_DATA_CONST_8G  24
-#define _LIS3DSH_CONVERT_DATA_CONST_6G  18
-#define _LIS3DSH_CONVERT_DATA_CONST_4G  12
-#define _LIS3DSH_CONVERT_DATA_CONST_2G  6
-#define _LIS3DSH_CONVERT_DATA_CONST_DIVIDER 100;
+#define _LIS3DSH_CONVERT_DATA_CONST_16G 73000
+#define _LIS3DSH_CONVERT_DATA_CONST_8G  24414
+#define _LIS3DSH_CONVERT_DATA_CONST_6G  18310
+#define _LIS3DSH_CONVERT_DATA_CONST_4G  12207
+#define _LIS3DSH_CONVERT_DATA_CONST_2G  6103
+#define _LIS3DSH_CONVERT_DATA_CONST_DIVIDER 100000;
 
 #define _LIS3DSH_REGADDR_INFO1  0x0D
 #define _LIS3DSH_REGADDR_INFO2  0x0E
@@ -47,12 +47,14 @@
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_Y 0x11
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_Z 0x12
 
-#define _LIS3DSH_FILTERSIZE 5
+#define _LIS3DSH_FILTERSIZE 10
 
 #define AXIS_X 0
 #define AXIS_Y 1
 #define AXIS_Z 2
 
+#define _DATA_POSITIVE 1
+#define _DATA_NEGATIVE 0
 /******************************************************************************
  *** STRUCTS
  ******************************************************************************/
@@ -60,6 +62,7 @@ typedef struct{
 	uint16_t raw;
 	uint16_t filtered;
 	uint32_t mg;
+	uint8_t sign;
 }LIS3DSH_ACC_Data_T;
 
 typedef struct{
@@ -70,6 +73,7 @@ typedef struct{
 
 typedef struct{
 	uint8_t scale;
+	uint8_t offsetCounter;
 }LIS3DSH_SaveSetting_T;
 
 typedef struct{
@@ -92,6 +96,9 @@ typedef struct{
 	LIS3DSH_AvgFilter_T AvarageFilter[4];
 }LIS3DSH_Filter_T;
 
+typedef struct{
+	uint16_t Offset[3];
+}LIS3DSH_OffsetValue_T;
 /******************************************************************************
  *** ENUMS
  ******************************************************************************/
@@ -473,3 +480,5 @@ uint8_t LIS3DSH_Read_Temperature_Data();
 uint8_t LIS3DSH_ConvertData();
 
 uint8_t LIS3DSH_AvarageFilter(uint8_t axis);
+
+uint8_t LIS3DSH_OtoCalib();
