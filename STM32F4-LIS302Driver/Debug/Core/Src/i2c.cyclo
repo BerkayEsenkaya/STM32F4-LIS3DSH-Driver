@@ -1,0 +1,7 @@
+../Core/Src/i2c.c:30:9:I2C_Init	1
+../Core/Src/i2c.c:50:9:I2C_GetAccess	1
+../Core/Src/i2c.c:56:9:I2C_ReleaseAccess	1
+../Core/Src/i2c.c:62:9:I2C_SendReceive	6
+../Core/Src/i2c.c:123:9:I2C_SendReceiveCompleteCallback	1
+../Core/Src/i2c.c:149:15:I2C_GetI2CModuleFromNo	5
+../Core/Src/i2c.c:185:6:HAL_I2C_TxRxCpltCallback	4

@@ -31,9 +31,8 @@ uint8_t LIS3DSH_Init(){
 		LIS3DSH_AccalometerSoftReset();
         return _LIS3DSH_OK;
 	}else{
-		while(1){
-			/* Communication is fail*/
-		}
+		return _LIS3DSH_NOT_OK;
+
 	}
 }
 
@@ -161,9 +160,7 @@ uint8_t LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(uint8_t regAddr, uint8_t *WrittenData
 	if(WrittenData[0] == rxBuff[0]){
 		return _LIS3DSH_OK;
 	}else{
-		while(1){
-
-		}
+		return _LIS3DSH_NOT_OK;
 	}
 }
 

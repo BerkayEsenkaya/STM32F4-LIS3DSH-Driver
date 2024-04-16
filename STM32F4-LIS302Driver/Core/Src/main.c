@@ -18,11 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "usb_host.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lis302.h"
+#include"i2c.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,8 +47,11 @@ I2S_HandleTypeDef hi2s3;
 
 SPI_HandleTypeDef hspi1;
 
+HCD_HandleTypeDef hhcd_USB_OTG_FS;
+
 /* USER CODE BEGIN PV */
 extern LIS3DSH_RESULTS_T results;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,8 +60,7 @@ static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_I2S3_Init(void);
 static void MX_SPI1_Init(void);
-void MX_USB_HOST_Process(void);
-
+static void MX_USB_OTG_FS_HCD_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -99,12 +101,16 @@ int main(void)
   MX_I2C1_Init();
   MX_I2S3_Init();
   MX_SPI1_Init();
-  MX_USB_HOST_Init();
+  MX_USB_OTG_FS_HCD_Init();
   /* USER CODE BEGIN 2 */
-
-  HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
+  uint8_t rxBuff[2];
+  uint8_t txBuff[1];
+  uint8_t devaddr = 0x53;
+  uint8_t devidaddr;
+  devidaddr = 0x00;
+  txBuff[0] = devidaddr;
+   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
-
   LIS3DSH_Init();
 
   LIS3DSH_Reg_Set_Ctrl3(INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_HIGH, INT_SIGNAL_PULSE, INT2_DISABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
@@ -119,9 +125,12 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
+   I2C_SendReceive(I2C_NO1,devaddr,txBuff,2, rxBuff, 2, HAL_MAX_DELAY);
+ //  HAL_I2C_Master_Transmit(&hi2c1, devaddrW,devidaddr , 2, 50);
+  // HAL_I2C_Master_Receive(&hi2c1, devaddrR, rxBuff, 2, 50);
+
    LIS3DSH_Read_Accmeter_Data();
    LIS3DSH_Read_Temperature_Data();
 
@@ -302,6 +311,37 @@ static void MX_SPI1_Init(void)
   /* USER CODE BEGIN SPI1_Init 2 */
 //  SPI_Init(&SPI_1, 1, CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin);
   /* USER CODE END SPI1_Init 2 */
+
+}
+
+/**
+  * @brief USB_OTG_FS Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USB_OTG_FS_HCD_Init(void)
+{
+
+  /* USER CODE BEGIN USB_OTG_FS_Init 0 */
+
+  /* USER CODE END USB_OTG_FS_Init 0 */
+
+  /* USER CODE BEGIN USB_OTG_FS_Init 1 */
+
+  /* USER CODE END USB_OTG_FS_Init 1 */
+  hhcd_USB_OTG_FS.Instance = USB_OTG_FS;
+  hhcd_USB_OTG_FS.Init.Host_channels = 8;
+  hhcd_USB_OTG_FS.Init.speed = HCD_SPEED_FULL;
+  hhcd_USB_OTG_FS.Init.dma_enable = DISABLE;
+  hhcd_USB_OTG_FS.Init.phy_itface = HCD_PHY_EMBEDDED;
+  hhcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
+  if (HAL_HCD_Init(&hhcd_USB_OTG_FS) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USB_OTG_FS_Init 2 */
+
+  /* USER CODE END USB_OTG_FS_Init 2 */
 
 }
 
