@@ -26,7 +26,7 @@ LIS3DSH_Filter_T Filter;
  */
 uint8_t LIS3DSH_Init(){
 	uint8_t whoIam[1];
-	LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_WHOIAM, whoIam, 1);
+	whoIam[0] = LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_WHOIAM, 1);
 	if(whoIam[0] == _LIS3DSH_ID){  /* Communication is successful*/
 		LIS3DSH_AccalometerSoftReset();
         return _LIS3DSH_OK;
@@ -38,12 +38,13 @@ uint8_t LIS3DSH_Init(){
 
 /** \brief
  */
-uint8_t LIS3DSH_Read_Reg(uint8_t RegAddr, uint8_t *rxBuff,uint8_t lenght){
+uint16_t LIS3DSH_Read_Reg(uint8_t RegAddr,uint8_t lenght){
 	uint8_t txBuff[1];
-
+	uint8_t rxBuff[1];
 	txBuff[0] = RegAddr | LIS3DSH_SPIMODE_READ;
 
-	return SPI_TransmitReceive(SPI_NO1, txBuff, rxBuff, 1, lenght);
+	SPI_TransmitReceive(SPI_NO1, txBuff, rxBuff, 1, lenght);
+	return rxBuff[0];
 }
 
 /** \brief
@@ -156,7 +157,7 @@ uint8_t LIS3DSH_AccalometerSoftReset(){
  */
 uint8_t LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(uint8_t regAddr, uint8_t *WrittenData){
 	uint8_t rxBuff[1];
-	LIS3DSH_Read_Reg(regAddr, rxBuff,1);
+	rxBuff[0] = LIS3DSH_Read_Reg(regAddr,1);
 	if(WrittenData[0] == rxBuff[0]){
 		return _LIS3DSH_OK;
 	}else{
@@ -167,26 +168,15 @@ uint8_t LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(uint8_t regAddr, uint8_t *WrittenData
 /** \brief
  */
 uint8_t LIS3DSH_Read_Accmeter_Data(){
-	uint8_t temph[1];
-	uint8_t templ[1];
-    temph[0] = 0;
-    templ[0] = 0;
-	LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_XH, temph,1);
-	LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_XL, templ,1);
-    results.axis[AXIS_X].raw = (temph[0]<<8);
-    results.axis[AXIS_X].raw |= templ[0];
-    temph[0] = 0;
-    templ[0] = 0;
-    LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_YH, temph,1);
-    LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_YL, templ,1);
-    results.axis[AXIS_Y].raw = (temph[0]<<8);
-    results.axis[AXIS_Y].raw |= templ[0];
-    temph[0] = 0;
-    templ[0] = 0;
-    LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_ZH, temph,1);
-    LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_ZL, templ,1);
-    results.axis[AXIS_Z].raw = (temph[0]<<8);
-    results.axis[AXIS_Z].raw |= templ[0];
+
+	results.axis[AXIS_X].raw  = LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_XH,1) << 8;
+	results.axis[AXIS_X].raw |= LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_XL,1);
+
+	results.axis[AXIS_Y].raw =LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_YH,1) << 8;
+	results.axis[AXIS_Y].raw |=LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_YL,1);
+
+	results.axis[AXIS_Z].raw = LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_ZH,1) << 8;
+	results.axis[AXIS_Z].raw |= LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_AXIS_ZL,1);
 
     if(results.axis[AXIS_X].raw >= 32767){
         	results.axis[AXIS_X].raw = 65535 - results.axis[AXIS_X].raw;
@@ -217,9 +207,12 @@ uint8_t LIS3DSH_Read_Accmeter_Data(){
 /** \brief
  */
 uint8_t LIS3DSH_Read_Temperature_Data(){
-	uint8_t tempdataBuff[2];
-	LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_TEMPERATURE, tempdataBuff,1);
-	results.temperature.raw = tempdataBuff[0];
+
+	results.temperature.raw = LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_TEMPERATURE,2);
+	if(results.temperature.raw >= 0x80){
+		results.temperature.raw = 0xFF - results.temperature.raw + 1;
+	}
+	results.temperature.celcius = 25 + (results.temperature.raw/2);
 }
 
 /** \brief

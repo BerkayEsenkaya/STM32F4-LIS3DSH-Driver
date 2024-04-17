@@ -378,7 +378,7 @@ uint8_t LIS3DSH_Init();
  * \param  lenght : lenght of the data which to be read from LIS3DSH registers.
  * \return nothing.
  */
-uint8_t LIS3DSH_Read_Reg( uint8_t RegAddr, uint8_t *rxBuff,uint8_t lenght);
+uint16_t LIS3DSH_Read_Reg( uint8_t RegAddr, uint8_t lenght);
 
 /** \brief Write to the LIS3DSH registers.
  * \param  RegAddr : Address of the register to be write.

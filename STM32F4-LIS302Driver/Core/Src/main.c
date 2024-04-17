@@ -21,8 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lis302.h"
-#include"i2c.h"
+#include"lis302.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,8 +41,6 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-I2C_HandleTypeDef hi2c1;
-
 I2S_HandleTypeDef hi2s3;
 
 SPI_HandleTypeDef hspi1;
@@ -57,7 +55,6 @@ extern LIS3DSH_RESULTS_T results;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_I2C1_Init(void);
 static void MX_I2S3_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USB_OTG_FS_HCD_Init(void);
@@ -98,24 +95,28 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_I2C1_Init();
   MX_I2S3_Init();
   MX_SPI1_Init();
   MX_USB_OTG_FS_HCD_Init();
   /* USER CODE BEGIN 2 */
   uint8_t rxBuff[2];
-  uint8_t txBuff[1];
+  uint8_t txBuff[2];
+  uint8_t txBuff1[1];
   uint8_t devaddr = 0x53;
   uint8_t devidaddr;
+  uint8_t bw_rate_addr = 0x2D;
+  uint8_t data = 0x0A;
   devidaddr = 0x00;
-  txBuff[0] = devidaddr;
+  txBuff1[0] = bw_rate_addr;
+  txBuff[0] = bw_rate_addr;
+  txBuff[1] = data;
    HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
   LIS3DSH_Init();
 
   LIS3DSH_Reg_Set_Ctrl3(INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_HIGH, INT_SIGNAL_PULSE, INT2_DISABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
-  LIS3DSH_Reg_Set_Ctrl4(DATARATE_HZ_50,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
-  LIS3DSH_Reg_Set_Ctrl5(ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_8G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
+  LIS3DSH_Reg_Set_Ctrl4(DATARATE_HZ_12,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
+  LIS3DSH_Reg_Set_Ctrl5(ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_4G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
   LIS3DSH_Reg_Set_Ctrl6(BOOT_DISABLE, FIFO_DISABLE, FIFO_WATERMARK_LEVEL_DISABLE, REG_ADDR_AUTO_INCREMENT_DISABLE, FIFO_EMPTY_INDICATION_DISABLE, FIFO_WATERMARK_INT_DISABLE, FIFO_OVERRUN_INT_DISABLE, BOOT_INT_DISABLE);
 
   /* USER CODE END 2 */
@@ -127,9 +128,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-   I2C_SendReceive(I2C_NO1,devaddr,txBuff,2, rxBuff, 2, HAL_MAX_DELAY);
- //  HAL_I2C_Master_Transmit(&hi2c1, devaddrW,devidaddr , 2, 50);
-  // HAL_I2C_Master_Receive(&hi2c1, devaddrR, rxBuff, 2, 50);
 
    LIS3DSH_Read_Accmeter_Data();
    LIS3DSH_Read_Temperature_Data();
@@ -137,8 +135,10 @@ int main(void)
    if(results.axis[AXIS_X].mg >= 350){
 	   if(results.axis[AXIS_X].sign == 1){
 		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
+		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
 	   }else{
 		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
+		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
 	   }
    }else{
 	   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
@@ -148,8 +148,10 @@ int main(void)
    if(results.axis[AXIS_Y].mg >= 350){
    	   if(results.axis[AXIS_Y].sign == 1){
    		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+   		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
    	   }else{
    		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
+   		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
    	   }
    }else{
    	   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
@@ -158,7 +160,7 @@ int main(void)
 
 
 
-   HAL_Delay(10);
+   HAL_Delay(25);
   }
   /* USER CODE END 3 */
 }
@@ -206,40 +208,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-}
-
-/**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C1_Init(void)
-{
-
-  /* USER CODE BEGIN I2C1_Init 0 */
-
-  /* USER CODE END I2C1_Init 0 */
-
-  /* USER CODE BEGIN I2C1_Init 1 */
-
-  /* USER CODE END I2C1_Init 1 */
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
-  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C1_Init 2 */
-
-  /* USER CODE END I2C1_Init 2 */
-
 }
 
 /**
@@ -424,6 +392,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(OTG_FS_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB6 PB9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MEMS_INT1_Pin */
   GPIO_InitStruct.Pin = MEMS_INT1_Pin;
