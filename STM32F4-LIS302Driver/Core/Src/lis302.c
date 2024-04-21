@@ -31,7 +31,9 @@ uint8_t LIS3DSH_Init(){
 		LIS3DSH_AccalometerSoftReset();
         return _LIS3DSH_OK;
 	}else{
-		return _LIS3DSH_NOT_OK;
+		while(1){
+
+		}
 
 	}
 }
@@ -198,10 +200,13 @@ uint8_t LIS3DSH_Read_Accmeter_Data(){
         }
 
     LIS3DSH_AvarageFilter(AXIS_X);
-    LIS3DSH_AvarageFilter(AXIS_Y);
-    LIS3DSH_AvarageFilter(AXIS_Z);
+    LIS3DSH_ConvertData(AXIS_X);
 
-    LIS3DSH_ConvertData();
+    LIS3DSH_AvarageFilter(AXIS_Y);
+    LIS3DSH_ConvertData(AXIS_Y);
+
+    LIS3DSH_AvarageFilter(AXIS_Z);
+    LIS3DSH_ConvertData(AXIS_Z);
 }
 
 /** \brief
@@ -217,7 +222,7 @@ uint8_t LIS3DSH_Read_Temperature_Data(){
 
 /** \brief
  */
-uint8_t LIS3DSH_ConvertData(){
+uint8_t LIS3DSH_ConvertData(uint8_t axis){
 	uint32_t convertMltply;
     switch(save.scale){
        case SCALE_SELECT_2G :convertMltply = _LIS3DSH_CONVERT_DATA_CONST_2G;
@@ -232,14 +237,8 @@ uint8_t LIS3DSH_ConvertData(){
        break;
     }
 
-    results.axis[AXIS_X].mg = results.axis[AXIS_X].filtered * convertMltply;
-    results.axis[AXIS_X].mg = results.axis[AXIS_X].mg / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
-
-    results.axis[AXIS_Y].mg = results.axis[AXIS_Y].filtered * convertMltply;
-    results.axis[AXIS_Y].mg = results.axis[AXIS_Y].mg / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
-
-    results.axis[AXIS_Z].mg = results.axis[AXIS_Z].filtered * convertMltply;
-    results.axis[AXIS_Z].mg = results.axis[AXIS_Z].mg / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
+    results.axis[axis].mg = results.axis[axis].filtered * convertMltply;
+    results.axis[axis].mg = results.axis[axis].mg / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
 }
 
 /** \brief
@@ -265,62 +264,3 @@ uint8_t LIS3DSH_AvarageFilter(uint8_t axis){
 	}
 }
 
-/** \brief
- */
-uint8_t LIS3DSH_OtoCalib(){
-	LIS3DSH_OffsetValue_T calib;
-	uint32_t convertMltply;
-	uint8_t buffX[2];
-	uint8_t buffY[2];
-	uint8_t buffZ[2];
-    uint8_t offsetX[2];
-    uint8_t offsetY[2];
-    uint8_t offsetZ[2];
-
-    switch(save.scale){
-	    case SCALE_SELECT_2G :convertMltply = _LIS3DSH_CONVERT_DATA_CONST_2G;
-	    break;
-	    case SCALE_SELECT_4G :convertMltply = _LIS3DSH_CONVERT_DATA_CONST_4G;
-	    break;
-	    case SCALE_SELECT_6G :convertMltply = _LIS3DSH_CONVERT_DATA_CONST_6G;
-	    break;
-	    case SCALE_SELECT_8G :convertMltply = _LIS3DSH_CONVERT_DATA_CONST_8G;
-	    break;
-	    case SCALE_SELECT_16G :convertMltply = _LIS3DSH_CONVERT_DATA_CONST_16G;
-	    break;
-	}
-
-	if(results.axis[AXIS_X].sign == _DATA_POSITIVE){
-		calib.Offset[AXIS_X] = 65535 - results.axis[AXIS_X].filtered;
-		offsetX[0] = (calib.Offset[AXIS_X]>>8);
-		offsetX[1] = (calib.Offset[AXIS_X] & 0x00FF);
-	}else{
-		calib.Offset[AXIS_X] = results.axis[AXIS_X].filtered;
-		offsetX[0] = (calib.Offset[AXIS_X]>>8);
-	    offsetX[1] = (calib.Offset[AXIS_X] & 0x00FF);
-	}
-
-	if(results.axis[AXIS_Y].sign == _DATA_POSITIVE){
-			calib.Offset[AXIS_Y] = 65535 - results.axis[AXIS_Y].filtered;
-			offsetY[0] = (calib.Offset[AXIS_Y]>>8);
-			offsetY[1] = (calib.Offset[AXIS_Y] & 0x00FF);
-	}else{
-			calib.Offset[AXIS_Y] = results.axis[AXIS_Y].filtered;
-			offsetY[0] = (calib.Offset[AXIS_Y]>>8);
-			offsetY[1] = (calib.Offset[AXIS_Y] & 0x00FF);
-	}
-
-	if(results.axis[AXIS_Z].filtered <= 1000*convertMltply){
-			calib.Offset[AXIS_Z] = 1000*convertMltply - (results.axis[AXIS_Z].filtered);
-			offsetZ[0] = (calib.Offset[AXIS_Z]>>8);
-			offsetZ[1] = (calib.Offset[AXIS_Z] & 0x00FF);
-	}else{
-		calib.Offset[AXIS_Z] = results.axis[AXIS_Z].filtered - (1000*convertMltply);
-		calib.Offset[AXIS_Z] = 65535 - calib.Offset[AXIS_Z];
-		offsetZ[0] = (calib.Offset[AXIS_Z]>>8);
-		offsetZ[1] = (calib.Offset[AXIS_Z] & 0x00FF);
-	}
-   LIS3DSH_Write_Reg(_LIS3DSH_REGADDR_OFFSET_AXIS_X, offsetX, 2);
-   LIS3DSH_Write_Reg(_LIS3DSH_REGADDR_OFFSET_AXIS_Y, offsetY, 2);
-   LIS3DSH_Write_Reg(_LIS3DSH_REGADDR_OFFSET_AXIS_Z, offsetZ, 2);
-}

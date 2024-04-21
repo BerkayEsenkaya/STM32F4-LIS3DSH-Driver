@@ -477,8 +477,6 @@ uint8_t LIS3DSH_Read_Temperature_Data();
  * \param  nothing.
  * \return nothing.
  */
-uint8_t LIS3DSH_ConvertData();
+uint8_t LIS3DSH_ConvertData(uint8_t axis);
 
 uint8_t LIS3DSH_AvarageFilter(uint8_t axis);
-
-uint8_t LIS3DSH_OtoCalib();

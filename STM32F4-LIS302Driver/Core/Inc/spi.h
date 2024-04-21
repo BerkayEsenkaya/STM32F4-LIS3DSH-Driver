@@ -5,9 +5,13 @@
 #define SPI_NO2 2
 #define SPI_NO3 3
 
+#define SPI_NODE1 1
+#define SPI_NODE2 2
+#define SPI_NODE3 3
+
 typedef struct{
-	void *handle;
-	uint8_t spiNo;
+   uint8_t spiNo;
+   uint8_t spiNode;
 }SPI_Handle_T;
 
 uint8_t SPI_Init(void *handle, uint8_t spiNo, GPIO_TypeDef *CSport, uint8_t CSpin);
