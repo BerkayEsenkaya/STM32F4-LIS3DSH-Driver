@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include"lis302.h"
+#include"lis3dsh.h"
 
 /* USER CODE END Includes */
 
