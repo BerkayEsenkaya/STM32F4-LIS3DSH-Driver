@@ -1,16 +1,16 @@
 /*
- * lıs302.h
+ * lıs3dshh.h
  *
  *  Created on: Feb 20, 2024
  *      Author: Berkay Esenkaya
  */
 
+#include<stdint.h>
 
+#ifndef INC_LIS3DSH_H_
+#define INC_LIS3DSH_H_
 
-#ifndef INC_LIS302_H_
-#define INC_LIS302_H_
-
-#endif /* INC_LIS302_H_ */
+#endif /* INC_LIS3DSH_H_ */
 
 /******************************************************************************
  *** DEFINES

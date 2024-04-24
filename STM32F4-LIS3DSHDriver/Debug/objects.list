@@ -1,4 +1,4 @@
-"./Core/Src/lis302.o"
+"./Core/Src/lis3dsh.o"
 "./Core/Src/main.o"
 "./Core/Src/spi.o"
 "./Core/Src/stm32f4xx_hal_msp.o"

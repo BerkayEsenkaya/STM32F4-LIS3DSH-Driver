@@ -17,11 +17,11 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <lis3dsh.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include"lis302.h"
 
 /* USER CODE END Includes */
 
