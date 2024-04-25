@@ -12,4 +12,4 @@
 ../Core/Src/lis3dsh.c:172:9:LIS3DSH_Read_Accmeter_Data	8	static
 ../Core/Src/lis3dsh.c:214:9:LIS3DSH_Read_Temperature_Data	8	static
 ../Core/Src/lis3dsh.c:224:9:LIS3DSH_ConvertData	24	static
-../Core/Src/lis3dsh.c:245:9:LIS3DSH_AvarageFilter	56	static
+../Core/Src/lis3dsh.c:245:9:LIS3DSH_AvarageFilter	48	static

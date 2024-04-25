@@ -244,22 +244,31 @@ uint8_t LIS3DSH_ConvertData(uint8_t axis){
  */
 uint8_t LIS3DSH_AvarageFilter(uint8_t axis){
 	uint8_t i;
+	uint8_t arrayMaxIndex = (_LIS3DSH_FILTERSIZE - 1);
+/*
 	if(Filter.AvarageFilter[axis].entered == 0){
 		Filter.AvarageFilter[axis].sum = 0;
 		Filter.AvarageFilter[axis].data[Filter.AvarageFilter[axis].entered] = results.axis[axis].raw;
 		Filter.AvarageFilter[axis].entered = 1;
 		return 1;
 	}
-	Filter.AvarageFilter[axis].data[ Filter.AvarageFilter[axis].entered ] = results.axis[axis].raw;
+*/
+	Filter.AvarageFilter[axis].data[ Filter.AvarageFilter[axis].entered ] = results.axis[axis].raw; /* */
 
+	if(Filter.AvarageFilter[axis].entered == arrayMaxIndex){
+		for(i=0; i <= arrayMaxIndex; i++ ){
+			Filter.AvarageFilter[axis].sum +=  Filter.AvarageFilter[axis].data[i]; /* The received data is summed after reaching the filter size*/
+		}
+		for(i=1; i <= arrayMaxIndex; i++ ){
+			Filter.AvarageFilter[axis].data[i-1] = Filter.AvarageFilter[axis].data[i]; /* Fifo */
+		}
+
+		results.axis[axis].filtered = Filter.AvarageFilter[axis].sum / (_LIS3DSH_FILTERSIZE); /* Calculate the average*/
+		Filter.AvarageFilter[axis].sum = 0;
+		Filter.AvarageFilter[axis].entered -= 1;
+
+	}
 
 	Filter.AvarageFilter[axis].entered += 1;
-	if(Filter.AvarageFilter[axis].entered == _LIS3DSH_FILTERSIZE){
-		for(i=0; i < (Filter.AvarageFilter[axis].entered); i++ ){
-				Filter.AvarageFilter[axis].sum +=  Filter.AvarageFilter[axis].data[i];
-			}
-		results.axis[axis].filtered = Filter.AvarageFilter[axis].sum / Filter.AvarageFilter[axis].entered;
-		Filter.AvarageFilter[axis].entered = 0;
-	}
 }
 
