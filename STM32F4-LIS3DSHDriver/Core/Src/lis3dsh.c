@@ -245,14 +245,7 @@ uint8_t LIS3DSH_ConvertData(uint8_t axis){
 uint8_t LIS3DSH_AvarageFilter(uint8_t axis){
 	uint8_t i;
 	uint8_t arrayMaxIndex = (_LIS3DSH_FILTERSIZE - 1);
-/*
-	if(Filter.AvarageFilter[axis].entered == 0){
-		Filter.AvarageFilter[axis].sum = 0;
-		Filter.AvarageFilter[axis].data[Filter.AvarageFilter[axis].entered] = results.axis[axis].raw;
-		Filter.AvarageFilter[axis].entered = 1;
-		return 1;
-	}
-*/
+
 	Filter.AvarageFilter[axis].data[ Filter.AvarageFilter[axis].entered ] = results.axis[axis].raw; /* */
 
 	if(Filter.AvarageFilter[axis].entered == arrayMaxIndex){

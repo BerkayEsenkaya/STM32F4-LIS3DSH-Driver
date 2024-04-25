@@ -2,8 +2,6 @@
 #include"main.h"
 
 extern SPI_HandleTypeDef hspi1;
-extern SPI_Handle_T SPI_1;
-
 
 uint8_t SPI_TransmitReceive(uint8_t spiNo,uint8_t *pTxdata, uint8_t *pRxdata, uint8_t Txlenght, uint8_t Rxlenght ){
 	if(spiNo == SPI_NO1){

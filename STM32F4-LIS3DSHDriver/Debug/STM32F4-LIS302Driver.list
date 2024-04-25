@@ -41,9 +41,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  18 .debug_macro  00020ad2  00000000  00000000  00031a15  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_line   0000f4ed  00000000  00000000  000524e7  2**0
+ 19 .debug_line   0000f4eb  00000000  00000000  000524e7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_str    000c32c3  00000000  00000000  000619d4  2**0
+ 20 .debug_str    000c32c3  00000000  00000000  000619d2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  21 .debug_frame  000030dc  00000000  00000000  00124c98  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -1262,11 +1262,7 @@ uint8_t LIS3DSH_AvarageFilter(uint8_t axis){
 	uint8_t arrayMaxIndex = (_LIS3DSH_FILTERSIZE - 1);
  8000b0c:	2309      	movs	r3, #9
  8000b0e:	73bb      	strb	r3, [r7, #14]
-		Filter.AvarageFilter[axis].data[Filter.AvarageFilter[axis].entered] = results.axis[axis].raw;
-		Filter.AvarageFilter[axis].entered = 1;
-		return 1;
-	}
-*/
+
 	Filter.AvarageFilter[axis].data[ Filter.AvarageFilter[axis].entered ] = results.axis[axis].raw; /* */
  8000b10:	79f9      	ldrb	r1, [r7, #7]
  8000b12:	79fa      	ldrb	r2, [r7, #7]
@@ -2000,7 +1996,7 @@ static void MX_SPI1_Init(void)
  8000fdc:	f000 f950 	bl	8001280 <Error_Handler>
   }
   /* USER CODE BEGIN SPI1_Init 2 */
-//  SPI_Init(&SPI_1, 1, CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin);
+
   /* USER CODE END SPI1_Init 2 */
 
 }
@@ -2460,10 +2456,10 @@ __STATIC_FORCEINLINE void __disable_irq(void)
 	...
 
 0800128c <SPI_TransmitReceive>:
+#include"spi.h"
+#include"main.h"
 
 extern SPI_HandleTypeDef hspi1;
-extern SPI_Handle_T SPI_1;
-
 
 uint8_t SPI_TransmitReceive(uint8_t spiNo,uint8_t *pTxdata, uint8_t *pRxdata, uint8_t Txlenght, uint8_t Rxlenght ){
  800128c:	b580      	push	{r7, lr}

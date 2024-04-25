@@ -282,7 +282,7 @@ static void MX_SPI1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN SPI1_Init 2 */
-//  SPI_Init(&SPI_1, 1, CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin);
+
   /* USER CODE END SPI1_Init 2 */
 
 }
