@@ -115,10 +115,12 @@ void Error_Handler(void);
 #define OTG_FS_OverCurrent_GPIO_Port GPIOD
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
-#define MEMS_INT1_Pin GPIO_PIN_0
-#define MEMS_INT1_GPIO_Port GPIOE
-#define MEMS_INT2_Pin GPIO_PIN_1
-#define MEMS_INT2_GPIO_Port GPIOE
+#define LIS3DSH_INT1_Pin GPIO_PIN_0
+#define LIS3DSH_INT1_GPIO_Port GPIOE
+#define LIS3DSH_INT1_EXTI_IRQn EXTI0_IRQn
+#define LIS3DSH_INT2_Pin GPIO_PIN_1
+#define LIS3DSH_INT2_GPIO_Port GPIOE
+#define LIS3DSH_INT2_EXTI_IRQn EXTI1_IRQn
 
 /* USER CODE BEGIN Private defines */
 

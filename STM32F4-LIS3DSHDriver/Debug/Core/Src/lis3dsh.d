@@ -1,5 +1,5 @@
-Core/Src/lis3dsh.o: ../Core/Src/lis3dsh.c ../Core/Inc/lis3dsh.h \
- ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
+Core/Src/lis3dsh.o: ../Core/Src/lis3dsh.c ../Core/Inc/main.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
@@ -29,8 +29,7 @@ Core/Src/lis3dsh.o: ../Core/Src/lis3dsh.c ../Core/Inc/lis3dsh.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_hcd.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h ../Core/Inc/spi.h \
- ../Core/Inc/main.h
-../Core/Inc/lis3dsh.h:
+ ../Core/Inc/main.h ../Core/Inc/lis3dsh.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -64,3 +63,4 @@ Core/Src/lis3dsh.o: ../Core/Src/lis3dsh.c ../Core/Inc/lis3dsh.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h:
 ../Core/Inc/spi.h:
 ../Core/Inc/main.h:
+../Core/Inc/lis3dsh.h:

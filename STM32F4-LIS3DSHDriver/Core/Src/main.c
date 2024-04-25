@@ -17,12 +17,11 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <lis3dsh.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lis3dsh.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,7 +48,7 @@ HCD_HandleTypeDef hhcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
 extern LIS3DSH_RESULTS_T results;
-
+LIS3DSH_CALLBACK_T callback;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,6 +57,7 @@ static void MX_GPIO_Init(void);
 static void MX_I2S3_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USB_OTG_FS_HCD_Init(void);
+static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -73,6 +73,7 @@ static void MX_USB_OTG_FS_HCD_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -80,7 +81,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-     HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -98,13 +99,16 @@ int main(void)
   MX_I2S3_Init();
   MX_SPI1_Init();
   MX_USB_OTG_FS_HCD_Init();
+
+  /* Initialize interrupts */
+  MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
   LIS3DSH_Init();
 
-  LIS3DSH_Reg_Set_Ctrl3(INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_HIGH, INT_SIGNAL_PULSE, INT2_DISABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
+  LIS3DSH_Reg_Set_Ctrl3(INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_LOW, INT_SIGNAL_PULSE, INT2_ENABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
   LIS3DSH_Reg_Set_Ctrl4(DATARATE_HZ_3,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
   LIS3DSH_Reg_Set_Ctrl5(ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_4G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
   LIS3DSH_Reg_Set_Ctrl6(BOOT_DISABLE, FIFO_DISABLE, FIFO_WATERMARK_LEVEL_DISABLE, REG_ADDR_AUTO_INCREMENT_DISABLE, FIFO_EMPTY_INDICATION_DISABLE, FIFO_WATERMARK_INT_DISABLE, FIFO_OVERRUN_INT_DISABLE, BOOT_INT_DISABLE);
@@ -119,36 +123,37 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-   LIS3DSH_Read_Accmeter_Data();
-   LIS3DSH_Read_Temperature_Data();
-   if(results.axis[AXIS_X].mg >= 350){
-	   if(results.axis[AXIS_X].sign == 1){
-		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
-		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
-	   }else{
-		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
-		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
-	   }
-   }else{
-	   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
-	   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
+   if(callback.LIS3DSH_INTERRUPT_STATE == LIS3DSH_DATA_READY){
+	  LIS3DSH_Read_Accmeter_Data();
+	  LIS3DSH_Read_Temperature_Data();
+	  callback.LIS3DSH_INTERRUPT_STATE = LIS3DSH_DATA_NOT_READY;
    }
 
-   if(results.axis[AXIS_Y].mg >= 350){
-   	   if(results.axis[AXIS_Y].sign == 1){
-   		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-   		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
-   	   }else{
-   		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
-   		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-   	   }
-   }else{
-   	   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-   	   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
-   }
+      if(results.axis[AXIS_X].mg >= 350){
+	      if(results.axis[AXIS_X].sign == 1){
+		     HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
+		     HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
+	      }else{
+		     HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
+		     HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
+	     }
+      }else{
+	      HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
+	      HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
+      }
 
-
-
+      if(results.axis[AXIS_Y].mg >= 350){
+   	      if(results.axis[AXIS_Y].sign == 1){
+   		      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+   		      HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
+   	      }else{
+   		      HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
+   		      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+   	      }
+      }else{
+   	       HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+   	       HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
+      }
 
   }
   /* USER CODE END 3 */
@@ -197,6 +202,17 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief NVIC Configuration.
+  * @retval None
+  */
+static void MX_NVIC_Init(void)
+{
+  /* EXTI0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
 /**
@@ -390,24 +406,37 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : MEMS_INT1_Pin */
-  GPIO_InitStruct.Pin = MEMS_INT1_Pin;
+  /*Configure GPIO pin : LIS3DSH_INT1_Pin */
+  GPIO_InitStruct.Pin = LIS3DSH_INT1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(LIS3DSH_INT1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LIS3DSH_INT2_Pin */
+  GPIO_InitStruct.Pin = LIS3DSH_INT2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(MEMS_INT1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(LIS3DSH_INT2_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : MEMS_INT2_Pin */
-  GPIO_InitStruct.Pin = MEMS_INT2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(MEMS_INT2_GPIO_Port, &GPIO_InitStruct);
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  /* Prevent unused argument(s) compilation warning */
+  if(GPIO_Pin == GPIO_PIN_0){
+	  callback.LIS3DSH_INTERRUPT_STATE = LIS3DSH_DATA_READY;
+  }
+  /* NOTE: This function Should not be modified, when the callback is needed,
+           the HAL_GPIO_EXTI_Callback could be implemented in the user file
+   */
+}
 /* USER CODE END 4 */
 
 /**

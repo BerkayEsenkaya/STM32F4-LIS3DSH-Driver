@@ -11,5 +11,5 @@
 ../Core/Src/lis3dsh.c:160:9:LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT	2
 ../Core/Src/lis3dsh.c:172:9:LIS3DSH_Read_Accmeter_Data	4
 ../Core/Src/lis3dsh.c:214:9:LIS3DSH_Read_Temperature_Data	2
-../Core/Src/lis3dsh.c:225:9:LIS3DSH_ConvertData	6
-../Core/Src/lis3dsh.c:246:9:LIS3DSH_AvarageFilter	4
+../Core/Src/lis3dsh.c:224:9:LIS3DSH_ConvertData	6
+../Core/Src/lis3dsh.c:245:9:LIS3DSH_AvarageFilter	4

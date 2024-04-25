@@ -1,11 +1,11 @@
 /******************************************************************************
  *** INCLUDES
  ******************************************************************************/
-#include <lis3dsh.h>
+
 #include<stdint.h>
 #include"main.h"
 #include"spi.h"
-
+#include"lis3dsh.h"
 /******************************************************************************
  *** DEFINES
  ******************************************************************************/
@@ -198,21 +198,20 @@ uint8_t LIS3DSH_Read_Accmeter_Data(){
         }else{
         	results.axis[AXIS_Z].sign = _DATA_POSITIVE;
         }
+        LIS3DSH_AvarageFilter(AXIS_X);
+        LIS3DSH_ConvertData(AXIS_X);
 
-    LIS3DSH_AvarageFilter(AXIS_X);
-    LIS3DSH_ConvertData(AXIS_X);
+        LIS3DSH_AvarageFilter(AXIS_Y);
+        LIS3DSH_ConvertData(AXIS_Y);
 
-    LIS3DSH_AvarageFilter(AXIS_Y);
-    LIS3DSH_ConvertData(AXIS_Y);
+        LIS3DSH_AvarageFilter(AXIS_Z);
+        LIS3DSH_ConvertData(AXIS_Z);
 
-    LIS3DSH_AvarageFilter(AXIS_Z);
-    LIS3DSH_ConvertData(AXIS_Z);
 }
 
 /** \brief
  */
 uint8_t LIS3DSH_Read_Temperature_Data(){
-
 	results.temperature.raw = LIS3DSH_Read_Reg(_LIS3DSH_REGADDR_OUTPUT_TEMPERATURE,2);
 	if(results.temperature.raw >= 0x80){
 		results.temperature.raw = 0xFF - results.temperature.raw + 1;

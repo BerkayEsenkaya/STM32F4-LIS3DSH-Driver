@@ -30,6 +30,7 @@
 #define _LIS3DSH_REGADDR_INFO1  0x0D
 #define _LIS3DSH_REGADDR_INFO2  0x0E
 #define _LIS3DSH_REGADDR_WHOIAM 0x0F
+#define _LIS3DSH_REGADDR_STAT   0x18
 #define _LIS3DSH_REGADDR_CTRL1  0x21
 #define _LIS3DSH_REGADDR_CTRL2  0x22
 #define _LIS3DSH_REGADDR_CTRL3  0x23
@@ -58,6 +59,14 @@
 /******************************************************************************
  *** STRUCTS
  ******************************************************************************/
+typedef struct{
+	uint8_t LIS3DSH_INTERRUPT_STATE;
+}LIS3DSH_CALLBACK_T;
+
+enum{
+	LIS3DSH_DATA_NOT_READY,
+	LIS3DSH_DATA_READY,
+};
 typedef struct{
 	uint16_t raw;
 	uint16_t filtered;
@@ -279,15 +288,14 @@ typedef enum{
 }LIS3DSH_HYST2_T;
 
 typedef enum{
-	SM2_INT_INT1,
-	SM2_INT_INT2,
+	SM2_PIN_INT_INT1,
+	SM2_PIN_INT_INT2,
 }LIS3DSH_SM2_PIN_T;
 
 typedef enum{
-	SM2_DISABLE,
-	SM2_ENABLE,
+	SM2_EN_DISABLE,
+	SM2_EN_ENABLE,
 }LIS3DSH_SM2_EN_T;
-
 
 /******************************************************************************
  *** UNIONS
@@ -361,7 +369,6 @@ typedef union{
 		uint8_t boot : 1;
 	};
 }LIS3DSH_REG_CTRL_6_T;
-
 
 /******************************************************************************
  *** FUNCTION PROTOTYPES
