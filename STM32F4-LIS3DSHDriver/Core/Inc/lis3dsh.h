@@ -55,6 +55,7 @@
 
 #define _DATA_POSITIVE 1
 #define _DATA_NEGATIVE 0
+
 /******************************************************************************
  *** STRUCTS
  ******************************************************************************/
@@ -78,23 +79,13 @@ typedef struct{
 
 typedef struct{
 	LIS3DSH_ACC_Data_T axis[3];
-	LIS3DSH_TEMP_Data_T temperature;
+	LIS3DSH_TEMP_Data_T DieTemperature;
 }LIS3DSH_RESULTS_T;
 
 typedef struct{
 	uint8_t spiNo;
 	uint8_t spiNode;
 }LIS3DSH_Module_T;
-
-typedef struct{
-	uint8_t entered;
-	uint64_t sum;
-	uint16_t data[_LIS3DSH_FILTERSIZE];
-}LIS3DSH_AvgFilter_T;
-
-typedef struct{
-	LIS3DSH_AvgFilter_T AvarageFilter[4];
-}LIS3DSH_Filter_T;
 
 typedef struct{
 	uint16_t Offset[3];
@@ -362,6 +353,16 @@ typedef union{
 	};
 }LIS3DSH_REG_CTRL_6_T;
 
+typedef struct{
+	LIS3DSH_RESULTS_T Results;
+	LIS3DSH_SaveSetting_T Save;
+	LIS3DSH_REG_CTRL_1_T REG_CTRL_1;
+	LIS3DSH_REG_CTRL_2_T REG_CTRL_2;
+	LIS3DSH_REG_CTRL_3_T REG_CTRL_3;
+	LIS3DSH_REG_CTRL_4_T REG_CTRL_4;
+	LIS3DSH_REG_CTRL_5_T REG_CTRL_5;
+	LIS3DSH_REG_CTRL_6_T REG_CTRL_6;
+}LIS3DSH_SENSOR_PARAM_T;
 
 /******************************************************************************
  *** FUNCTION PROTOTYPES
@@ -370,7 +371,7 @@ typedef union{
  * \param  nothing.
  * \return nothing.
  */
-uint8_t LIS3DSH_Init();
+uint8_t LIS3DSH_Init(LIS3DSH_SENSOR_PARAM_T *handle);
 
 /** \brief Read the LIS3DSH registers value.
  * \param  RegAddr : Address of the register to be read.
@@ -378,7 +379,7 @@ uint8_t LIS3DSH_Init();
  * \param  lenght : lenght of the data which to be read from LIS3DSH registers.
  * \return nothing.
  */
-uint16_t LIS3DSH_Read_Reg( uint8_t RegAddr, uint8_t lenght);
+uint16_t LIS3DSH_Read_Reg(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr, uint8_t lenght);
 
 /** \brief Write to the LIS3DSH registers.
  * \param  RegAddr : Address of the register to be write.
@@ -386,7 +387,7 @@ uint16_t LIS3DSH_Read_Reg( uint8_t RegAddr, uint8_t lenght);
  * \param  lenght : lenght of the data which to be write to LIS3DSH registers.
  * \return nothing.
  */
-uint8_t LIS3DSH_Write_Reg( uint8_t RegAddr, uint8_t *data,uint8_t lenght);
+uint8_t LIS3DSH_Write_Reg( LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr, uint8_t *data,uint8_t lenght);
 
 /** \brief combines the entered settings appropriately and writes it to the CTRL1 register.
  * \param hys : Hysteresis unsigned value to be added or subtracted from threshold value in SM1.
@@ -394,7 +395,7 @@ uint8_t LIS3DSH_Write_Reg( uint8_t RegAddr, uint8_t *data,uint8_t lenght);
  * \param sm1_en : SM1 enable or disable.
  * \return nothing
  */
-uint8_t LIS3DSH_Reg_Set_Ctrl1(LIS3DSH_HYST1_T hys, LIS3DSH_SM1_PIN_T sm1_pin, LIS3DSH_SM1_EN_T sm1_en);
+uint8_t LIS3DSH_Reg_Set_Ctrl1(LIS3DSH_SENSOR_PARAM_T *handle, LIS3DSH_HYST1_T hys, LIS3DSH_SM1_PIN_T sm1_pin, LIS3DSH_SM1_EN_T sm1_en);
 
 /** \brief combines the entered settings appropriately and writes it to the CTRL2 register.
  * \param hys : Hysteresis unsigned value to be added or subtracted from threshold value in SM2.
@@ -402,7 +403,7 @@ uint8_t LIS3DSH_Reg_Set_Ctrl1(LIS3DSH_HYST1_T hys, LIS3DSH_SM1_PIN_T sm1_pin, LI
  * \param sm2_en : SM2 enable or disable.
  * \return nothing
  */
-uint8_t LIS3DSH_Reg_Set_Ctrl2(LIS3DSH_HYST2_T hys, LIS3DSH_SM2_PIN_T sm2_pin, LIS3DSH_SM2_EN_T sm2_en);
+uint8_t LIS3DSH_Reg_Set_Ctrl2(LIS3DSH_SENSOR_PARAM_T *handle, LIS3DSH_HYST2_T hys, LIS3DSH_SM2_PIN_T sm2_pin, LIS3DSH_SM2_EN_T sm2_en);
 
 /** \brief combines the entered settings appropriately and writes it to the CTRL3 register.
  * \param dr_en : Data Ready signal enable to INT1.
@@ -414,7 +415,7 @@ uint8_t LIS3DSH_Reg_Set_Ctrl2(LIS3DSH_HYST2_T hys, LIS3DSH_SM2_PIN_T sm2_pin, LI
  * \param reset : Soft reset enable or disable.
  * \return nothing
  */
-uint8_t LIS3DSH_Reg_Set_Ctrl3(LIS3DSH_DR_EN_T dren, LIS3DSH_IEA_T iea, LIS3DSH_IEL_T iel, LIS3DSH_INT2_EN_T int2_en, LIS3DSH_INT1_EN_T int1_en, LIS3DSH_VFILT_T Vfilt, LIS3DSH_STRT_T reset);
+uint8_t LIS3DSH_Reg_Set_Ctrl3(LIS3DSH_SENSOR_PARAM_T *handle, LIS3DSH_DR_EN_T dren, LIS3DSH_IEA_T iea, LIS3DSH_IEL_T iel, LIS3DSH_INT2_EN_T int2_en, LIS3DSH_INT1_EN_T int1_en, LIS3DSH_VFILT_T Vfilt, LIS3DSH_STRT_T reset);
 
 /** \brief combines the entered settings appropriately and writes it to the CTRL4 register.
  * \param odrVal : Output data rate and power mode selection.
@@ -424,7 +425,7 @@ uint8_t LIS3DSH_Reg_Set_Ctrl3(LIS3DSH_DR_EN_T dren, LIS3DSH_IEA_T iea, LIS3DSH_I
  * \param StateZAxis : Selection the Z axis enable or disable.
  * \return nothing
  */
-uint8_t LIS3DSH_Reg_Set_Ctrl4(LIS3DSH_ODR_T odrVal, LIS3DSH_BDU_T bduVal, LIS3DSH_XEN_T StateXAxis, LIS3DSH_YEN_T StateYAxis, LIS3DSH_ZEN_T StateZAxis );
+uint8_t LIS3DSH_Reg_Set_Ctrl4(LIS3DSH_SENSOR_PARAM_T *handle, LIS3DSH_ODR_T odrVal, LIS3DSH_BDU_T bduVal, LIS3DSH_XEN_T StateXAxis, LIS3DSH_YEN_T StateYAxis, LIS3DSH_ZEN_T StateZAxis );
 
 /** \brief combines the entered settings appropriately and writes it to the CTRL5 register.
  * \param bw :  Selection the bandwidth of the Anti-aliasing filter.
@@ -433,7 +434,7 @@ uint8_t LIS3DSH_Reg_Set_Ctrl4(LIS3DSH_ODR_T odrVal, LIS3DSH_BDU_T bduVal, LIS3DS
  * \param spiMode : Selection the SPI mode 3 wire or 4 wire.
  * \return nothing
  */
-uint8_t LIS3DSH_Reg_Set_Ctrl5(LIS3DSH_BW_T bw,LIS3DSH_FSCALE_T scale, LIS3DSH_ST_T selftest ,LIS3DSH_SIM_T spiMode );
+uint8_t LIS3DSH_Reg_Set_Ctrl5(LIS3DSH_SENSOR_PARAM_T *handle, LIS3DSH_BW_T bw,LIS3DSH_FSCALE_T scale, LIS3DSH_ST_T selftest ,LIS3DSH_SIM_T spiMode );
 
 /** \brief combines the entered settings appropriately and writes it to the CTRL6 register.
  * \param boot :  Force reboot, cleared as soon as the reboot is finished. Active high.
@@ -446,37 +447,35 @@ uint8_t LIS3DSH_Reg_Set_Ctrl5(LIS3DSH_BW_T bw,LIS3DSH_FSCALE_T scale, LIS3DSH_ST
  * \param bootint : Selection the BOOT interrupt on int2 enable or disable.
  * \return nothing
  */
-uint8_t LIS3DSH_Reg_Set_Ctrl6(uint8_t boot, LIS3DSH_FIFO_EN_T fifo_en, LIS3DSH_WTM_EN_T wtm_en, LIS3DSH_ADD_INC_T reg_inc_en, LIS3DSH_P1_EMPTY_T fifo_empty_int, LIS3DSH_P1_WTM_T fifo_wtm_int, LIS3DSH_P1_OVERRUN_T fifo_ovr_int, LIS3DSH_P2_BOOT_T bootint);
+uint8_t LIS3DSH_Reg_Set_Ctrl6(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t boot, LIS3DSH_FIFO_EN_T fifo_en, LIS3DSH_WTM_EN_T wtm_en, LIS3DSH_ADD_INC_T reg_inc_en, LIS3DSH_P1_EMPTY_T fifo_empty_int, LIS3DSH_P1_WTM_T fifo_wtm_int, LIS3DSH_P1_OVERRUN_T fifo_ovr_int, LIS3DSH_P2_BOOT_T bootint);
 
 /** \brief Reset the accalometer used to CTRL2 register softreset bit.
  * \param  nothing.
  * \return nothing.
  */
-uint8_t LIS3DSH_AccalometerSoftReset();
+uint8_t LIS3DSH_AccalometerSoftReset(LIS3DSH_SENSOR_PARAM_T *handle);
 
 /** \brief Controlled the data which written to register. Read the written data from register if read data and written data is equal return 1.
  * \param  regAddr  : Addresses the register of written data.
  * \param  *WrittenData : Value of written data.
  * \return nothing.
  */
-uint8_t LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(uint8_t regAddr, uint8_t *WrittenData);
+uint8_t LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t regAddr, uint8_t *WrittenData);
 
 /** \brief Read the OUT_X, OUT_Y, OUT_Z registers so read the accalometer x,y,z output data.
  * \param  nothing.
  * \return nothing.
  */
-uint8_t LIS3DSH_Read_Accmeter_Data();
+uint8_t LIS3DSH_Read_Accmeter_Data(LIS3DSH_SENSOR_PARAM_T *handle );
 
 /** \brief Read the OUT_T register so read the temperature output data.
  * \param  nothing.
  * \return nothing.
  */
-uint8_t LIS3DSH_Read_Temperature_Data();
+uint8_t LIS3DSH_Read_Temperature_Data(LIS3DSH_SENSOR_PARAM_T *handle);
 
 /** \brief Convert the data to mili g from binary code.
  * \param  nothing.
  * \return nothing.
  */
-uint8_t LIS3DSH_ConvertData(uint8_t axis);
-
-uint8_t LIS3DSH_AvarageFilter(uint8_t axis);
+uint8_t LIS3DSH_ConvertData(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t axis);
