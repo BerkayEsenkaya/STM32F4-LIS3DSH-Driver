@@ -21,7 +21,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lis3dsh.h"
+
+#include"lis3dsh.h"
+#include "filter.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,8 +50,11 @@ SPI_HandleTypeDef hspi1;
 HCD_HandleTypeDef hhcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
-extern LIS3DSH_RESULTS_T results;
+//extern LIS3DSH_RESULTS_T results;
 LIS3DSH_CALLBACK_T callback;
+//extern LIS3DSH_RESULTS_T results;
+LIS3DSH_SENSOR_PARAM_T LIS3DSH_Sensor_1;
+AverageFilterParam_T LIS3DSH_AverageFilter_X, LIS3DSH_AverageFilter_Y, LIS3DSH_AverageFilter_Z;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,12 +112,12 @@ int main(void)
 
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
-  LIS3DSH_Init();
+  LIS3DSH_Init(&LIS3DSH_Sensor_1);
 
-  LIS3DSH_Reg_Set_Ctrl3(INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_LOW, INT_SIGNAL_PULSE, INT2_ENABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
-  LIS3DSH_Reg_Set_Ctrl4(DATARATE_HZ_3,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
-  LIS3DSH_Reg_Set_Ctrl5(ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_4G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
-  LIS3DSH_Reg_Set_Ctrl6(BOOT_DISABLE, FIFO_DISABLE, FIFO_WATERMARK_LEVEL_DISABLE, REG_ADDR_AUTO_INCREMENT_DISABLE, FIFO_EMPTY_INDICATION_DISABLE, FIFO_WATERMARK_INT_DISABLE, FIFO_OVERRUN_INT_DISABLE, BOOT_INT_DISABLE);
+  LIS3DSH_Reg_Set_Ctrl3(&LIS3DSH_Sensor_1, INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_HIGH, INT_SIGNAL_PULSE, INT2_DISABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
+  LIS3DSH_Reg_Set_Ctrl4(&LIS3DSH_Sensor_1, DATARATE_HZ_3,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
+  LIS3DSH_Reg_Set_Ctrl5(&LIS3DSH_Sensor_1, ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_4G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
+  LIS3DSH_Reg_Set_Ctrl6(&LIS3DSH_Sensor_1, BOOT_DISABLE, FIFO_DISABLE, FIFO_WATERMARK_LEVEL_DISABLE, REG_ADDR_AUTO_INCREMENT_DISABLE, FIFO_EMPTY_INDICATION_DISABLE, FIFO_WATERMARK_INT_DISABLE, FIFO_OVERRUN_INT_DISABLE, BOOT_INT_DISABLE);
 
   /* USER CODE END 2 */
 
@@ -124,36 +130,43 @@ int main(void)
     /* USER CODE BEGIN 3 */
 
    if(callback.LIS3DSH_INTERRUPT_STATE == LIS3DSH_DATA_READY){
-	  LIS3DSH_Read_Accmeter_Data();
-	  LIS3DSH_Read_Temperature_Data();
-	  callback.LIS3DSH_INTERRUPT_STATE = LIS3DSH_DATA_NOT_READY;
+	   LIS3DSH_Read_Accmeter_Data(&LIS3DSH_Sensor_1);
+     LIS3DSH_Read_Temperature_Data(&LIS3DSH_Sensor_1);
+	   callback.LIS3DSH_INTERRUPT_STATE = LIS3DSH_DATA_NOT_READY;
+   }
+   LIS3DSH_Sensor_1.Results.axis[AXIS_X].filtered = AverageFilter(&LIS3DSH_AverageFilter_X, LIS3DSH_Sensor_1.Results.axis[AXIS_X].raw, _LIS3DSH_FILTERSIZE);
+   LIS3DSH_Sensor_1.Results.axis[AXIS_Y].filtered = AverageFilter(&LIS3DSH_AverageFilter_Y, LIS3DSH_Sensor_1.Results.axis[AXIS_Y].raw, _LIS3DSH_FILTERSIZE);
+   LIS3DSH_Sensor_1.Results.axis[AXIS_Z].filtered = AverageFilter(&LIS3DSH_AverageFilter_Z, LIS3DSH_Sensor_1.Results.axis[AXIS_Z].raw, _LIS3DSH_FILTERSIZE);
+
+   LIS3DSH_ConvertData(&LIS3DSH_Sensor_1, AXIS_X);
+   LIS3DSH_ConvertData(&LIS3DSH_Sensor_1, AXIS_Y);
+   LIS3DSH_ConvertData(&LIS3DSH_Sensor_1, AXIS_Z);
+
+   if(LIS3DSH_Sensor_1.Results.axis[AXIS_X].mg >= 350){
+	   if(LIS3DSH_Sensor_1.Results.axis[AXIS_X].sign == 1){
+		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
+		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
+	   }else{
+		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
+		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
+	   }
+   }else{
+	   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
+	   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
    }
 
-      if(results.axis[AXIS_X].mg >= 350){
-	      if(results.axis[AXIS_X].sign == 1){
-		     HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
-		     HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
-	      }else{
-		     HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
-		     HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
-	     }
-      }else{
-	      HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
-	      HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
-      }
-
-      if(results.axis[AXIS_Y].mg >= 350){
-   	      if(results.axis[AXIS_Y].sign == 1){
-   		      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-   		      HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
-   	      }else{
-   		      HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
-   		      HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-   	      }
-      }else{
-   	       HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
-   	       HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
-      }
+   if(LIS3DSH_Sensor_1.Results.axis[AXIS_Y].mg >= 350){
+   	   if(LIS3DSH_Sensor_1.Results.axis[AXIS_Y].sign == 1){
+   		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
+   		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
+   	   }else{
+   		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
+   		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+   	   }
+   }else{
+   	   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
+   	   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
+   }
 
   }
   /* USER CODE END 3 */

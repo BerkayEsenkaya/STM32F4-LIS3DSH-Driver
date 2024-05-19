@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (12.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -60,8 +60,8 @@ all: main-build
 main-build: STM32F4-LIS302Driver.elf secondary-outputs
 
 # Tool invocations
-STM32F4-LIS302Driver.elf STM32F4-LIS302Driver.map: $(OBJS) $(USER_OBJS) C:\Users\esenk\STM32CubeIDE\EmbeddedBookWS\LIS3DSH-Driver\STM32F4-LIS3DSHDriver\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STM32F4-LIS302Driver.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\esenk\STM32CubeIDE\EmbeddedBookWS\LIS3DSH-Driver\STM32F4-LIS3DSHDriver\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F4-LIS302Driver.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+STM32F4-LIS302Driver.elf STM32F4-LIS302Driver.map: $(OBJS) $(USER_OBJS) C:\Users\esenk\STM32CubeIDE\STM32F4-LIS3DSH-Driver\STM32F4-LIS3DSHDriver\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STM32F4-LIS302Driver.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\esenk\STM32CubeIDE\STM32F4-LIS3DSH-Driver\STM32F4-LIS3DSHDriver\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F4-LIS302Driver.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
