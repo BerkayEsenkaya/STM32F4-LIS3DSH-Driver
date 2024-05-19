@@ -15,9 +15,7 @@
 /******************************************************************************
  *** VARIABLES
  ******************************************************************************/
-LIS3DSH_RESULTS_T results;
-LIS3DSH_SaveSetting_T save;
-LIS3DSH_Filter_T Filter;
+
 //LIS3DSH_RESULTS_T results;
 //LIS3DSH_SaveSetting_T save;
 
