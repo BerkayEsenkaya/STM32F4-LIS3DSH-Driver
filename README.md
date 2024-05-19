@@ -1,1 +1,1 @@
-# STM32F4_LIS302_Drivers
+# STM32F4_LIS3DSH_Driver
