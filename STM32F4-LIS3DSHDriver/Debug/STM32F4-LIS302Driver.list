@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  00020b6b  00000000  00000000  000185d9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   0000fc4a  00000000  00000000  00039144  2**0
+ 18 .debug_line   0000fc4b  00000000  00000000  00039144  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000c3490  00000000  00000000  00048d8e  2**0
+ 19 .debug_str    000c3490  00000000  00000000  00048d8f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0010c21e  2**0
+ 20 .comment      00000043  00000000  00000000  0010c21f  2**0
                   CONTENTS, READONLY
  21 .debug_frame  00003114  00000000  00000000  0010c264  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -1462,233 +1462,233 @@ int main(void)
   MX_NVIC_Init();
  8000cbe:	f000 f955 	bl	8000f6c <MX_NVIC_Init>
   /* USER CODE BEGIN 2 */
-  SPI_Init(&hspi1, &SPI_1, SPI_NODE1 ,CS_I2C_SPI_GPIO_Port , CS_I2C_SPI_Pin);
- 8000cc2:	4b6d      	ldr	r3, [pc, #436]	@ (8000e78 <main+0x1d8>)
- 8000cc4:	b2d9      	uxtb	r1, r3
- 8000cc6:	2308      	movs	r3, #8
- 8000cc8:	9300      	str	r3, [sp, #0]
- 8000cca:	4b6c      	ldr	r3, [pc, #432]	@ (8000e7c <main+0x1dc>)
- 8000ccc:	2201      	movs	r2, #1
- 8000cce:	486c      	ldr	r0, [pc, #432]	@ (8000e80 <main+0x1e0>)
- 8000cd0:	f000 fb0e 	bl	80012f0 <SPI_Init>
+  SPI_Init(&hspi1, SPI_NO_1, SPI_NODE1 ,CS_I2C_SPI_GPIO_Port , CS_I2C_SPI_Pin);
+ 8000cc2:	2308      	movs	r3, #8
+ 8000cc4:	9300      	str	r3, [sp, #0]
+ 8000cc6:	4b6c      	ldr	r3, [pc, #432]	@ (8000e78 <main+0x1d8>)
+ 8000cc8:	2201      	movs	r2, #1
+ 8000cca:	2101      	movs	r1, #1
+ 8000ccc:	486b      	ldr	r0, [pc, #428]	@ (8000e7c <main+0x1dc>)
+ 8000cce:	f000 fb0f 	bl	80012f0 <SPI_Init>
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
- 8000cd4:	2201      	movs	r2, #1
- 8000cd6:	2108      	movs	r1, #8
- 8000cd8:	4868      	ldr	r0, [pc, #416]	@ (8000e7c <main+0x1dc>)
- 8000cda:	f001 f907 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000cd2:	2201      	movs	r2, #1
+ 8000cd4:	2108      	movs	r1, #8
+ 8000cd6:	4868      	ldr	r0, [pc, #416]	@ (8000e78 <main+0x1d8>)
+ 8000cd8:	f001 f908 	bl	8001eec <HAL_GPIO_WritePin>
   HAL_Delay(1000);
- 8000cde:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
- 8000ce2:	f000 fe0f 	bl	8001904 <HAL_Delay>
+ 8000cdc:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
+ 8000ce0:	f000 fe10 	bl	8001904 <HAL_Delay>
   LIS3DSH_Init(SPI_1.handle ,&LIS3DSH_Sensor_1);
- 8000ce6:	4b64      	ldr	r3, [pc, #400]	@ (8000e78 <main+0x1d8>)
- 8000ce8:	681b      	ldr	r3, [r3, #0]
- 8000cea:	4966      	ldr	r1, [pc, #408]	@ (8000e84 <main+0x1e4>)
- 8000cec:	4618      	mov	r0, r3
- 8000cee:	f7ff fc6c 	bl	80005ca <LIS3DSH_Init>
+ 8000ce4:	4b66      	ldr	r3, [pc, #408]	@ (8000e80 <main+0x1e0>)
+ 8000ce6:	681b      	ldr	r3, [r3, #0]
+ 8000ce8:	4966      	ldr	r1, [pc, #408]	@ (8000e84 <main+0x1e4>)
+ 8000cea:	4618      	mov	r0, r3
+ 8000cec:	f7ff fc6d 	bl	80005ca <LIS3DSH_Init>
 
   LIS3DSH_Reg_Set_Ctrl3(&LIS3DSH_Sensor_1, INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_HIGH, INT_SIGNAL_PULSE, INT2_DISABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
- 8000cf2:	2300      	movs	r3, #0
- 8000cf4:	9303      	str	r3, [sp, #12]
- 8000cf6:	2300      	movs	r3, #0
- 8000cf8:	9302      	str	r3, [sp, #8]
- 8000cfa:	2301      	movs	r3, #1
- 8000cfc:	9301      	str	r3, [sp, #4]
- 8000cfe:	2300      	movs	r3, #0
- 8000d00:	9300      	str	r3, [sp, #0]
- 8000d02:	2301      	movs	r3, #1
- 8000d04:	2201      	movs	r2, #1
- 8000d06:	2101      	movs	r1, #1
- 8000d08:	485e      	ldr	r0, [pc, #376]	@ (8000e84 <main+0x1e4>)
- 8000d0a:	f7ff fcfc 	bl	8000706 <LIS3DSH_Reg_Set_Ctrl3>
+ 8000cf0:	2300      	movs	r3, #0
+ 8000cf2:	9303      	str	r3, [sp, #12]
+ 8000cf4:	2300      	movs	r3, #0
+ 8000cf6:	9302      	str	r3, [sp, #8]
+ 8000cf8:	2301      	movs	r3, #1
+ 8000cfa:	9301      	str	r3, [sp, #4]
+ 8000cfc:	2300      	movs	r3, #0
+ 8000cfe:	9300      	str	r3, [sp, #0]
+ 8000d00:	2301      	movs	r3, #1
+ 8000d02:	2201      	movs	r2, #1
+ 8000d04:	2101      	movs	r1, #1
+ 8000d06:	485f      	ldr	r0, [pc, #380]	@ (8000e84 <main+0x1e4>)
+ 8000d08:	f7ff fcfd 	bl	8000706 <LIS3DSH_Reg_Set_Ctrl3>
   LIS3DSH_Reg_Set_Ctrl4(&LIS3DSH_Sensor_1, DATARATE_HZ_3,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
- 8000d0e:	2301      	movs	r3, #1
- 8000d10:	9301      	str	r3, [sp, #4]
- 8000d12:	2301      	movs	r3, #1
- 8000d14:	9300      	str	r3, [sp, #0]
- 8000d16:	2301      	movs	r3, #1
- 8000d18:	2200      	movs	r2, #0
- 8000d1a:	2101      	movs	r1, #1
- 8000d1c:	4859      	ldr	r0, [pc, #356]	@ (8000e84 <main+0x1e4>)
- 8000d1e:	f7ff fd5e 	bl	80007de <LIS3DSH_Reg_Set_Ctrl4>
+ 8000d0c:	2301      	movs	r3, #1
+ 8000d0e:	9301      	str	r3, [sp, #4]
+ 8000d10:	2301      	movs	r3, #1
+ 8000d12:	9300      	str	r3, [sp, #0]
+ 8000d14:	2301      	movs	r3, #1
+ 8000d16:	2200      	movs	r2, #0
+ 8000d18:	2101      	movs	r1, #1
+ 8000d1a:	485a      	ldr	r0, [pc, #360]	@ (8000e84 <main+0x1e4>)
+ 8000d1c:	f7ff fd5f 	bl	80007de <LIS3DSH_Reg_Set_Ctrl4>
   LIS3DSH_Reg_Set_Ctrl5(&LIS3DSH_Sensor_1, ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_4G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
- 8000d22:	2300      	movs	r3, #0
- 8000d24:	9300      	str	r3, [sp, #0]
- 8000d26:	2300      	movs	r3, #0
- 8000d28:	2201      	movs	r2, #1
- 8000d2a:	2100      	movs	r1, #0
- 8000d2c:	4855      	ldr	r0, [pc, #340]	@ (8000e84 <main+0x1e4>)
- 8000d2e:	f7ff fdaa 	bl	8000886 <LIS3DSH_Reg_Set_Ctrl5>
+ 8000d20:	2300      	movs	r3, #0
+ 8000d22:	9300      	str	r3, [sp, #0]
+ 8000d24:	2300      	movs	r3, #0
+ 8000d26:	2201      	movs	r2, #1
+ 8000d28:	2100      	movs	r1, #0
+ 8000d2a:	4856      	ldr	r0, [pc, #344]	@ (8000e84 <main+0x1e4>)
+ 8000d2c:	f7ff fdab 	bl	8000886 <LIS3DSH_Reg_Set_Ctrl5>
   LIS3DSH_Reg_Set_Ctrl6(&LIS3DSH_Sensor_1, BOOT_DISABLE, FIFO_DISABLE, FIFO_WATERMARK_LEVEL_DISABLE, REG_ADDR_AUTO_INCREMENT_DISABLE, FIFO_EMPTY_INDICATION_DISABLE, FIFO_WATERMARK_INT_DISABLE, FIFO_OVERRUN_INT_DISABLE, BOOT_INT_DISABLE);
- 8000d32:	2300      	movs	r3, #0
- 8000d34:	9304      	str	r3, [sp, #16]
- 8000d36:	2300      	movs	r3, #0
- 8000d38:	9303      	str	r3, [sp, #12]
- 8000d3a:	2300      	movs	r3, #0
- 8000d3c:	9302      	str	r3, [sp, #8]
- 8000d3e:	2300      	movs	r3, #0
- 8000d40:	9301      	str	r3, [sp, #4]
- 8000d42:	2300      	movs	r3, #0
- 8000d44:	9300      	str	r3, [sp, #0]
- 8000d46:	2300      	movs	r3, #0
- 8000d48:	2200      	movs	r2, #0
- 8000d4a:	2100      	movs	r1, #0
- 8000d4c:	484d      	ldr	r0, [pc, #308]	@ (8000e84 <main+0x1e4>)
- 8000d4e:	f7ff fde7 	bl	8000920 <LIS3DSH_Reg_Set_Ctrl6>
+ 8000d30:	2300      	movs	r3, #0
+ 8000d32:	9304      	str	r3, [sp, #16]
+ 8000d34:	2300      	movs	r3, #0
+ 8000d36:	9303      	str	r3, [sp, #12]
+ 8000d38:	2300      	movs	r3, #0
+ 8000d3a:	9302      	str	r3, [sp, #8]
+ 8000d3c:	2300      	movs	r3, #0
+ 8000d3e:	9301      	str	r3, [sp, #4]
+ 8000d40:	2300      	movs	r3, #0
+ 8000d42:	9300      	str	r3, [sp, #0]
+ 8000d44:	2300      	movs	r3, #0
+ 8000d46:	2200      	movs	r2, #0
+ 8000d48:	2100      	movs	r1, #0
+ 8000d4a:	484e      	ldr	r0, [pc, #312]	@ (8000e84 <main+0x1e4>)
+ 8000d4c:	f7ff fde8 	bl	8000920 <LIS3DSH_Reg_Set_Ctrl6>
 	   LIS3DSH_Read_Accmeter_Data(&LIS3DSH_Sensor_1);
        LIS3DSH_Read_Temperature_Data(&LIS3DSH_Sensor_1);
        LIS3DSH_Sensor_1.Interrupt.DataState = LIS3DSH_DATA_NOT_READY;
    }
 */
    LIS3DSH_Read_Accmeter_Data(&LIS3DSH_Sensor_1);
- 8000d52:	484c      	ldr	r0, [pc, #304]	@ (8000e84 <main+0x1e4>)
- 8000d54:	f7ff fe8f 	bl	8000a76 <LIS3DSH_Read_Accmeter_Data>
+ 8000d50:	484c      	ldr	r0, [pc, #304]	@ (8000e84 <main+0x1e4>)
+ 8000d52:	f7ff fe90 	bl	8000a76 <LIS3DSH_Read_Accmeter_Data>
    LIS3DSH_Read_Temperature_Data(&LIS3DSH_Sensor_1);
- 8000d58:	484a      	ldr	r0, [pc, #296]	@ (8000e84 <main+0x1e4>)
- 8000d5a:	f7ff ff17 	bl	8000b8c <LIS3DSH_Read_Temperature_Data>
+ 8000d56:	484b      	ldr	r0, [pc, #300]	@ (8000e84 <main+0x1e4>)
+ 8000d58:	f7ff ff18 	bl	8000b8c <LIS3DSH_Read_Temperature_Data>
    LIS3DSH_Sensor_1.Results.axis[AXIS_X].filtered = AverageFilter(&LIS3DSH_AverageFilter_X, LIS3DSH_Sensor_1.Results.axis[AXIS_X].raw, _LIS3DSH_FILTERSIZE);
- 8000d5e:	4b49      	ldr	r3, [pc, #292]	@ (8000e84 <main+0x1e4>)
- 8000d60:	899b      	ldrh	r3, [r3, #12]
- 8000d62:	220a      	movs	r2, #10
- 8000d64:	4619      	mov	r1, r3
- 8000d66:	4848      	ldr	r0, [pc, #288]	@ (8000e88 <main+0x1e8>)
- 8000d68:	f7ff fba6 	bl	80004b8 <AverageFilter>
- 8000d6c:	4603      	mov	r3, r0
- 8000d6e:	461a      	mov	r2, r3
- 8000d70:	4b44      	ldr	r3, [pc, #272]	@ (8000e84 <main+0x1e4>)
- 8000d72:	81da      	strh	r2, [r3, #14]
+ 8000d5c:	4b49      	ldr	r3, [pc, #292]	@ (8000e84 <main+0x1e4>)
+ 8000d5e:	899b      	ldrh	r3, [r3, #12]
+ 8000d60:	220a      	movs	r2, #10
+ 8000d62:	4619      	mov	r1, r3
+ 8000d64:	4848      	ldr	r0, [pc, #288]	@ (8000e88 <main+0x1e8>)
+ 8000d66:	f7ff fba7 	bl	80004b8 <AverageFilter>
+ 8000d6a:	4603      	mov	r3, r0
+ 8000d6c:	461a      	mov	r2, r3
+ 8000d6e:	4b45      	ldr	r3, [pc, #276]	@ (8000e84 <main+0x1e4>)
+ 8000d70:	81da      	strh	r2, [r3, #14]
    LIS3DSH_Sensor_1.Results.axis[AXIS_Y].filtered = AverageFilter(&LIS3DSH_AverageFilter_Y, LIS3DSH_Sensor_1.Results.axis[AXIS_Y].raw, _LIS3DSH_FILTERSIZE);
- 8000d74:	4b43      	ldr	r3, [pc, #268]	@ (8000e84 <main+0x1e4>)
- 8000d76:	8b1b      	ldrh	r3, [r3, #24]
- 8000d78:	220a      	movs	r2, #10
- 8000d7a:	4619      	mov	r1, r3
- 8000d7c:	4843      	ldr	r0, [pc, #268]	@ (8000e8c <main+0x1ec>)
- 8000d7e:	f7ff fb9b 	bl	80004b8 <AverageFilter>
- 8000d82:	4603      	mov	r3, r0
- 8000d84:	461a      	mov	r2, r3
- 8000d86:	4b3f      	ldr	r3, [pc, #252]	@ (8000e84 <main+0x1e4>)
- 8000d88:	835a      	strh	r2, [r3, #26]
+ 8000d72:	4b44      	ldr	r3, [pc, #272]	@ (8000e84 <main+0x1e4>)
+ 8000d74:	8b1b      	ldrh	r3, [r3, #24]
+ 8000d76:	220a      	movs	r2, #10
+ 8000d78:	4619      	mov	r1, r3
+ 8000d7a:	4844      	ldr	r0, [pc, #272]	@ (8000e8c <main+0x1ec>)
+ 8000d7c:	f7ff fb9c 	bl	80004b8 <AverageFilter>
+ 8000d80:	4603      	mov	r3, r0
+ 8000d82:	461a      	mov	r2, r3
+ 8000d84:	4b3f      	ldr	r3, [pc, #252]	@ (8000e84 <main+0x1e4>)
+ 8000d86:	835a      	strh	r2, [r3, #26]
    LIS3DSH_Sensor_1.Results.axis[AXIS_Z].filtered = AverageFilter(&LIS3DSH_AverageFilter_Z, LIS3DSH_Sensor_1.Results.axis[AXIS_Z].raw, _LIS3DSH_FILTERSIZE);
- 8000d8a:	4b3e      	ldr	r3, [pc, #248]	@ (8000e84 <main+0x1e4>)
- 8000d8c:	8c9b      	ldrh	r3, [r3, #36]	@ 0x24
- 8000d8e:	220a      	movs	r2, #10
- 8000d90:	4619      	mov	r1, r3
- 8000d92:	483f      	ldr	r0, [pc, #252]	@ (8000e90 <main+0x1f0>)
- 8000d94:	f7ff fb90 	bl	80004b8 <AverageFilter>
- 8000d98:	4603      	mov	r3, r0
- 8000d9a:	461a      	mov	r2, r3
- 8000d9c:	4b39      	ldr	r3, [pc, #228]	@ (8000e84 <main+0x1e4>)
- 8000d9e:	84da      	strh	r2, [r3, #38]	@ 0x26
+ 8000d88:	4b3e      	ldr	r3, [pc, #248]	@ (8000e84 <main+0x1e4>)
+ 8000d8a:	8c9b      	ldrh	r3, [r3, #36]	@ 0x24
+ 8000d8c:	220a      	movs	r2, #10
+ 8000d8e:	4619      	mov	r1, r3
+ 8000d90:	483f      	ldr	r0, [pc, #252]	@ (8000e90 <main+0x1f0>)
+ 8000d92:	f7ff fb91 	bl	80004b8 <AverageFilter>
+ 8000d96:	4603      	mov	r3, r0
+ 8000d98:	461a      	mov	r2, r3
+ 8000d9a:	4b3a      	ldr	r3, [pc, #232]	@ (8000e84 <main+0x1e4>)
+ 8000d9c:	84da      	strh	r2, [r3, #38]	@ 0x26
 
    LIS3DSH_ConvertData(&LIS3DSH_Sensor_1, AXIS_X);
- 8000da0:	2100      	movs	r1, #0
- 8000da2:	4838      	ldr	r0, [pc, #224]	@ (8000e84 <main+0x1e4>)
- 8000da4:	f7ff ff18 	bl	8000bd8 <LIS3DSH_ConvertData>
+ 8000d9e:	2100      	movs	r1, #0
+ 8000da0:	4838      	ldr	r0, [pc, #224]	@ (8000e84 <main+0x1e4>)
+ 8000da2:	f7ff ff19 	bl	8000bd8 <LIS3DSH_ConvertData>
    LIS3DSH_ConvertData(&LIS3DSH_Sensor_1, AXIS_Y);
- 8000da8:	2101      	movs	r1, #1
- 8000daa:	4836      	ldr	r0, [pc, #216]	@ (8000e84 <main+0x1e4>)
- 8000dac:	f7ff ff14 	bl	8000bd8 <LIS3DSH_ConvertData>
+ 8000da6:	2101      	movs	r1, #1
+ 8000da8:	4836      	ldr	r0, [pc, #216]	@ (8000e84 <main+0x1e4>)
+ 8000daa:	f7ff ff15 	bl	8000bd8 <LIS3DSH_ConvertData>
    LIS3DSH_ConvertData(&LIS3DSH_Sensor_1, AXIS_Z);
- 8000db0:	2102      	movs	r1, #2
- 8000db2:	4834      	ldr	r0, [pc, #208]	@ (8000e84 <main+0x1e4>)
- 8000db4:	f7ff ff10 	bl	8000bd8 <LIS3DSH_ConvertData>
+ 8000dae:	2102      	movs	r1, #2
+ 8000db0:	4834      	ldr	r0, [pc, #208]	@ (8000e84 <main+0x1e4>)
+ 8000db2:	f7ff ff11 	bl	8000bd8 <LIS3DSH_ConvertData>
 
    if(LIS3DSH_Sensor_1.Results.axis[AXIS_X].CalcData >= 350){
- 8000db8:	4b32      	ldr	r3, [pc, #200]	@ (8000e84 <main+0x1e4>)
- 8000dba:	691b      	ldr	r3, [r3, #16]
- 8000dbc:	f5b3 7faf 	cmp.w	r3, #350	@ 0x15e
- 8000dc0:	d31d      	bcc.n	8000dfe <main+0x15e>
+ 8000db6:	4b33      	ldr	r3, [pc, #204]	@ (8000e84 <main+0x1e4>)
+ 8000db8:	691b      	ldr	r3, [r3, #16]
+ 8000dba:	f5b3 7faf 	cmp.w	r3, #350	@ 0x15e
+ 8000dbe:	d31d      	bcc.n	8000dfc <main+0x15c>
 	   if(LIS3DSH_Sensor_1.Results.axis[AXIS_X].sign == 1){
- 8000dc2:	4b30      	ldr	r3, [pc, #192]	@ (8000e84 <main+0x1e4>)
- 8000dc4:	7d1b      	ldrb	r3, [r3, #20]
- 8000dc6:	2b01      	cmp	r3, #1
- 8000dc8:	d10c      	bne.n	8000de4 <main+0x144>
+ 8000dc0:	4b30      	ldr	r3, [pc, #192]	@ (8000e84 <main+0x1e4>)
+ 8000dc2:	7d1b      	ldrb	r3, [r3, #20]
+ 8000dc4:	2b01      	cmp	r3, #1
+ 8000dc6:	d10c      	bne.n	8000de2 <main+0x142>
 		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
- 8000dca:	2201      	movs	r2, #1
- 8000dcc:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
- 8000dd0:	4830      	ldr	r0, [pc, #192]	@ (8000e94 <main+0x1f4>)
- 8000dd2:	f001 f88b 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000dc8:	2201      	movs	r2, #1
+ 8000dca:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
+ 8000dce:	4831      	ldr	r0, [pc, #196]	@ (8000e94 <main+0x1f4>)
+ 8000dd0:	f001 f88c 	bl	8001eec <HAL_GPIO_WritePin>
 		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
- 8000dd6:	2200      	movs	r2, #0
- 8000dd8:	f44f 5180 	mov.w	r1, #4096	@ 0x1000
- 8000ddc:	482d      	ldr	r0, [pc, #180]	@ (8000e94 <main+0x1f4>)
- 8000dde:	f001 f885 	bl	8001eec <HAL_GPIO_WritePin>
- 8000de2:	e018      	b.n	8000e16 <main+0x176>
+ 8000dd4:	2200      	movs	r2, #0
+ 8000dd6:	f44f 5180 	mov.w	r1, #4096	@ 0x1000
+ 8000dda:	482e      	ldr	r0, [pc, #184]	@ (8000e94 <main+0x1f4>)
+ 8000ddc:	f001 f886 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000de0:	e018      	b.n	8000e14 <main+0x174>
 	   }else{
 		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
- 8000de4:	2201      	movs	r2, #1
- 8000de6:	f44f 5180 	mov.w	r1, #4096	@ 0x1000
- 8000dea:	482a      	ldr	r0, [pc, #168]	@ (8000e94 <main+0x1f4>)
- 8000dec:	f001 f87e 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000de2:	2201      	movs	r2, #1
+ 8000de4:	f44f 5180 	mov.w	r1, #4096	@ 0x1000
+ 8000de8:	482a      	ldr	r0, [pc, #168]	@ (8000e94 <main+0x1f4>)
+ 8000dea:	f001 f87f 	bl	8001eec <HAL_GPIO_WritePin>
 		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
- 8000df0:	2200      	movs	r2, #0
- 8000df2:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
- 8000df6:	4827      	ldr	r0, [pc, #156]	@ (8000e94 <main+0x1f4>)
- 8000df8:	f001 f878 	bl	8001eec <HAL_GPIO_WritePin>
- 8000dfc:	e00b      	b.n	8000e16 <main+0x176>
+ 8000dee:	2200      	movs	r2, #0
+ 8000df0:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
+ 8000df4:	4827      	ldr	r0, [pc, #156]	@ (8000e94 <main+0x1f4>)
+ 8000df6:	f001 f879 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000dfa:	e00b      	b.n	8000e14 <main+0x174>
 	   }
    }else{
 	   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_RESET);
- 8000dfe:	2200      	movs	r2, #0
- 8000e00:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
- 8000e04:	4823      	ldr	r0, [pc, #140]	@ (8000e94 <main+0x1f4>)
- 8000e06:	f001 f871 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000dfc:	2200      	movs	r2, #0
+ 8000dfe:	f44f 4180 	mov.w	r1, #16384	@ 0x4000
+ 8000e02:	4824      	ldr	r0, [pc, #144]	@ (8000e94 <main+0x1f4>)
+ 8000e04:	f001 f872 	bl	8001eec <HAL_GPIO_WritePin>
 	   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
- 8000e0a:	2200      	movs	r2, #0
- 8000e0c:	f44f 5180 	mov.w	r1, #4096	@ 0x1000
- 8000e10:	4820      	ldr	r0, [pc, #128]	@ (8000e94 <main+0x1f4>)
- 8000e12:	f001 f86b 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000e08:	2200      	movs	r2, #0
+ 8000e0a:	f44f 5180 	mov.w	r1, #4096	@ 0x1000
+ 8000e0e:	4821      	ldr	r0, [pc, #132]	@ (8000e94 <main+0x1f4>)
+ 8000e10:	f001 f86c 	bl	8001eec <HAL_GPIO_WritePin>
    }
 
    if(LIS3DSH_Sensor_1.Results.axis[AXIS_Y].CalcData >= 350){
- 8000e16:	4b1b      	ldr	r3, [pc, #108]	@ (8000e84 <main+0x1e4>)
- 8000e18:	69db      	ldr	r3, [r3, #28]
- 8000e1a:	f5b3 7faf 	cmp.w	r3, #350	@ 0x15e
- 8000e1e:	d31e      	bcc.n	8000e5e <main+0x1be>
+ 8000e14:	4b1b      	ldr	r3, [pc, #108]	@ (8000e84 <main+0x1e4>)
+ 8000e16:	69db      	ldr	r3, [r3, #28]
+ 8000e18:	f5b3 7faf 	cmp.w	r3, #350	@ 0x15e
+ 8000e1c:	d31e      	bcc.n	8000e5c <main+0x1bc>
    	   if(LIS3DSH_Sensor_1.Results.axis[AXIS_Y].sign == 1){
- 8000e20:	4b18      	ldr	r3, [pc, #96]	@ (8000e84 <main+0x1e4>)
- 8000e22:	f893 3020 	ldrb.w	r3, [r3, #32]
- 8000e26:	2b01      	cmp	r3, #1
- 8000e28:	d10c      	bne.n	8000e44 <main+0x1a4>
+ 8000e1e:	4b19      	ldr	r3, [pc, #100]	@ (8000e84 <main+0x1e4>)
+ 8000e20:	f893 3020 	ldrb.w	r3, [r3, #32]
+ 8000e24:	2b01      	cmp	r3, #1
+ 8000e26:	d10c      	bne.n	8000e42 <main+0x1a2>
    		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
- 8000e2a:	2201      	movs	r2, #1
- 8000e2c:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
- 8000e30:	4818      	ldr	r0, [pc, #96]	@ (8000e94 <main+0x1f4>)
- 8000e32:	f001 f85b 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000e28:	2201      	movs	r2, #1
+ 8000e2a:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
+ 8000e2e:	4819      	ldr	r0, [pc, #100]	@ (8000e94 <main+0x1f4>)
+ 8000e30:	f001 f85c 	bl	8001eec <HAL_GPIO_WritePin>
    		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
- 8000e36:	2200      	movs	r2, #0
- 8000e38:	f44f 4100 	mov.w	r1, #32768	@ 0x8000
- 8000e3c:	4815      	ldr	r0, [pc, #84]	@ (8000e94 <main+0x1f4>)
- 8000e3e:	f001 f855 	bl	8001eec <HAL_GPIO_WritePin>
- 8000e42:	e786      	b.n	8000d52 <main+0xb2>
+ 8000e34:	2200      	movs	r2, #0
+ 8000e36:	f44f 4100 	mov.w	r1, #32768	@ 0x8000
+ 8000e3a:	4816      	ldr	r0, [pc, #88]	@ (8000e94 <main+0x1f4>)
+ 8000e3c:	f001 f856 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000e40:	e786      	b.n	8000d50 <main+0xb0>
    	   }else{
    		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
- 8000e44:	2201      	movs	r2, #1
- 8000e46:	f44f 4100 	mov.w	r1, #32768	@ 0x8000
- 8000e4a:	4812      	ldr	r0, [pc, #72]	@ (8000e94 <main+0x1f4>)
- 8000e4c:	f001 f84e 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000e42:	2201      	movs	r2, #1
+ 8000e44:	f44f 4100 	mov.w	r1, #32768	@ 0x8000
+ 8000e48:	4812      	ldr	r0, [pc, #72]	@ (8000e94 <main+0x1f4>)
+ 8000e4a:	f001 f84f 	bl	8001eec <HAL_GPIO_WritePin>
    		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
- 8000e50:	2200      	movs	r2, #0
- 8000e52:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
- 8000e56:	480f      	ldr	r0, [pc, #60]	@ (8000e94 <main+0x1f4>)
- 8000e58:	f001 f848 	bl	8001eec <HAL_GPIO_WritePin>
- 8000e5c:	e779      	b.n	8000d52 <main+0xb2>
+ 8000e4e:	2200      	movs	r2, #0
+ 8000e50:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
+ 8000e54:	480f      	ldr	r0, [pc, #60]	@ (8000e94 <main+0x1f4>)
+ 8000e56:	f001 f849 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000e5a:	e779      	b.n	8000d50 <main+0xb0>
    	   }
    }else{
    	   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
- 8000e5e:	2200      	movs	r2, #0
- 8000e60:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
- 8000e64:	480b      	ldr	r0, [pc, #44]	@ (8000e94 <main+0x1f4>)
- 8000e66:	f001 f841 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000e5c:	2200      	movs	r2, #0
+ 8000e5e:	f44f 5100 	mov.w	r1, #8192	@ 0x2000
+ 8000e62:	480c      	ldr	r0, [pc, #48]	@ (8000e94 <main+0x1f4>)
+ 8000e64:	f001 f842 	bl	8001eec <HAL_GPIO_WritePin>
    	   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
- 8000e6a:	2200      	movs	r2, #0
- 8000e6c:	f44f 4100 	mov.w	r1, #32768	@ 0x8000
- 8000e70:	4808      	ldr	r0, [pc, #32]	@ (8000e94 <main+0x1f4>)
- 8000e72:	f001 f83b 	bl	8001eec <HAL_GPIO_WritePin>
+ 8000e68:	2200      	movs	r2, #0
+ 8000e6a:	f44f 4100 	mov.w	r1, #32768	@ 0x8000
+ 8000e6e:	4809      	ldr	r0, [pc, #36]	@ (8000e94 <main+0x1f4>)
+ 8000e70:	f001 f83c 	bl	8001eec <HAL_GPIO_WritePin>
    LIS3DSH_Read_Accmeter_Data(&LIS3DSH_Sensor_1);
- 8000e76:	e76c      	b.n	8000d52 <main+0xb2>
- 8000e78:	20000a48 	.word	0x20000a48
- 8000e7c:	40021000 	.word	0x40021000
- 8000e80:	20000074 	.word	0x20000074
+ 8000e74:	e76c      	b.n	8000d50 <main+0xb0>
+ 8000e76:	bf00      	nop
+ 8000e78:	40021000 	.word	0x40021000
+ 8000e7c:	20000074 	.word	0x20000074
+ 8000e80:	20000a48 	.word	0x20000a48
  8000e84:	200003d0 	.word	0x200003d0
  8000e88:	20000418 	.word	0x20000418
  8000e8c:	20000628 	.word	0x20000628

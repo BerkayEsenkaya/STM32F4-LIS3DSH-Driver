@@ -113,7 +113,7 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-  SPI_Init(&hspi1, &SPI_1, SPI_NODE1 ,CS_I2C_SPI_GPIO_Port , CS_I2C_SPI_Pin);
+  SPI_Init(&hspi1, SPI_NO_1, SPI_NODE1 ,CS_I2C_SPI_GPIO_Port , CS_I2C_SPI_Pin);
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
   LIS3DSH_Init(SPI_1.handle ,&LIS3DSH_Sensor_1);
