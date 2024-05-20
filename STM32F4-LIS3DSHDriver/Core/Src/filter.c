@@ -2,7 +2,7 @@
  * filter.c
  *
  *  Created on: May 18, 2024
- *      Author: esenk
+ *      Author: Berkay Esenkaya
  */
 
 #include"filter.h"

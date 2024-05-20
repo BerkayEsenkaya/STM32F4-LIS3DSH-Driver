@@ -7,11 +7,6 @@
 
 #include<stdint.h>
 
-#ifndef INC_LIS3DSH_H_
-#define INC_LIS3DSH_H_
-
-#endif /* INC_LIS3DSH_H_ */
-
 /******************************************************************************
  *** DEFINES
  ******************************************************************************/
@@ -61,25 +56,25 @@
  *** STRUCTS
  ******************************************************************************/
 typedef struct{
-	uint8_t LIS3DSH_INTERRUPT_STATE;
+	uint8_t SPI_CS_Port;
+	uint8_t SPI_CS_Pin;
+}LIS3DSH_SPI_Node_T;
+
+typedef struct{
+	void *SPI_Handle;
+	LIS3DSH_SPI_Node_T SPI_Node;
+}LIS3DSH_Handle_T;
+
+typedef struct{
+	uint8_t DataState;
 }LIS3DSH_CALLBACK_T;
 
-enum{
-	LIS3DSH_DATA_NOT_READY,
-	LIS3DSH_DATA_READY,
-};
 typedef struct{
 	uint16_t raw;
 	uint16_t filtered;
-	uint32_t mg;
+	uint32_t CalcData;
 	uint8_t sign;
-}LIS3DSH_ACC_Data_T;
-
-typedef struct{
-	uint16_t raw;
-	uint16_t filtered;
-	uint8_t celcius;
-}LIS3DSH_TEMP_Data_T;
+}LIS3DSH_Data_T;
 
 typedef struct{
 	uint8_t scale;
@@ -87,21 +82,18 @@ typedef struct{
 }LIS3DSH_SaveSetting_T;
 
 typedef struct{
-	LIS3DSH_ACC_Data_T axis[3];
-	LIS3DSH_TEMP_Data_T DieTemperature;
+	LIS3DSH_Data_T axis[3];
+	LIS3DSH_Data_T DieTemperature;
 }LIS3DSH_RESULTS_T;
 
-typedef struct{
-	uint8_t spiNo;
-	uint8_t spiNode;
-}LIS3DSH_Module_T;
-
-typedef struct{
-	uint16_t Offset[3];
-}LIS3DSH_OffsetValue_T;
 /******************************************************************************
  *** ENUMS
  ******************************************************************************/
+enum{
+	LIS3DSH_DATA_NOT_READY,
+	LIS3DSH_DATA_READY,
+};
+
 typedef enum{
     INT1_DATA_READY_SIGNAL_DISABLE,
     INT1_DATA_READY_SIGNAL_ENABLE,
@@ -363,6 +355,8 @@ typedef union{
 
 
 typedef struct{
+	LIS3DSH_Handle_T COM;
+	LIS3DSH_CALLBACK_T Interrupt;
 	LIS3DSH_RESULTS_T Results;
 	LIS3DSH_SaveSetting_T Save;
 	LIS3DSH_REG_CTRL_1_T REG_CTRL_1;
@@ -381,7 +375,7 @@ typedef struct{
  * \param  nothing.
  * \return nothing.
  */
-uint8_t LIS3DSH_Init(LIS3DSH_SENSOR_PARAM_T *handle);
+uint8_t LIS3DSH_Init(void *spiHandle, LIS3DSH_SENSOR_PARAM_T *handle);
 
 /** \brief Read the LIS3DSH registers value.
  * \param  RegAddr : Address of the register to be read.

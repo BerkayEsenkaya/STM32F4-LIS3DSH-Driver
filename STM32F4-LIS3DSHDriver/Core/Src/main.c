@@ -24,7 +24,7 @@
 
 #include"lis3dsh.h"
 #include "filter.h"
-
+#include "spi.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,11 +50,15 @@ SPI_HandleTypeDef hspi1;
 HCD_HandleTypeDef hhcd_USB_OTG_FS;
 
 /* USER CODE BEGIN PV */
-//extern LIS3DSH_RESULTS_T results;
+
 LIS3DSH_CALLBACK_T callback;
-//extern LIS3DSH_RESULTS_T results;
+
 LIS3DSH_SENSOR_PARAM_T LIS3DSH_Sensor_1;
+
 AverageFilterParam_T LIS3DSH_AverageFilter_X, LIS3DSH_AverageFilter_Y, LIS3DSH_AverageFilter_Z;
+
+extern SPI_Handle_T SPI_1, SPI_2, SPI_3 ;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -109,10 +113,10 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-
+  SPI_Init(&hspi1, &SPI_1, SPI_NODE1 ,CS_I2C_SPI_GPIO_Port , CS_I2C_SPI_Pin);
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
   HAL_Delay(1000);
-  LIS3DSH_Init(&LIS3DSH_Sensor_1);
+  LIS3DSH_Init(SPI_1.handle ,&LIS3DSH_Sensor_1);
 
   LIS3DSH_Reg_Set_Ctrl3(&LIS3DSH_Sensor_1, INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_HIGH, INT_SIGNAL_PULSE, INT2_DISABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
   LIS3DSH_Reg_Set_Ctrl4(&LIS3DSH_Sensor_1, DATARATE_HZ_3,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
@@ -128,12 +132,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-   if(callback.LIS3DSH_INTERRUPT_STATE == LIS3DSH_DATA_READY){
+/*
+   if(LIS3DSH_Sensor_1.Interrupt.DataState == LIS3DSH_DATA_READY){
 	   LIS3DSH_Read_Accmeter_Data(&LIS3DSH_Sensor_1);
-     LIS3DSH_Read_Temperature_Data(&LIS3DSH_Sensor_1);
-	   callback.LIS3DSH_INTERRUPT_STATE = LIS3DSH_DATA_NOT_READY;
+       LIS3DSH_Read_Temperature_Data(&LIS3DSH_Sensor_1);
+       LIS3DSH_Sensor_1.Interrupt.DataState = LIS3DSH_DATA_NOT_READY;
    }
+*/
+   LIS3DSH_Read_Accmeter_Data(&LIS3DSH_Sensor_1);
+   LIS3DSH_Read_Temperature_Data(&LIS3DSH_Sensor_1);
    LIS3DSH_Sensor_1.Results.axis[AXIS_X].filtered = AverageFilter(&LIS3DSH_AverageFilter_X, LIS3DSH_Sensor_1.Results.axis[AXIS_X].raw, _LIS3DSH_FILTERSIZE);
    LIS3DSH_Sensor_1.Results.axis[AXIS_Y].filtered = AverageFilter(&LIS3DSH_AverageFilter_Y, LIS3DSH_Sensor_1.Results.axis[AXIS_Y].raw, _LIS3DSH_FILTERSIZE);
    LIS3DSH_Sensor_1.Results.axis[AXIS_Z].filtered = AverageFilter(&LIS3DSH_AverageFilter_Z, LIS3DSH_Sensor_1.Results.axis[AXIS_Z].raw, _LIS3DSH_FILTERSIZE);
@@ -142,7 +149,7 @@ int main(void)
    LIS3DSH_ConvertData(&LIS3DSH_Sensor_1, AXIS_Y);
    LIS3DSH_ConvertData(&LIS3DSH_Sensor_1, AXIS_Z);
 
-   if(LIS3DSH_Sensor_1.Results.axis[AXIS_X].mg >= 350){
+   if(LIS3DSH_Sensor_1.Results.axis[AXIS_X].CalcData >= 350){
 	   if(LIS3DSH_Sensor_1.Results.axis[AXIS_X].sign == 1){
 		   HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
 		   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
@@ -155,7 +162,7 @@ int main(void)
 	   HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_RESET);
    }
 
-   if(LIS3DSH_Sensor_1.Results.axis[AXIS_Y].mg >= 350){
+   if(LIS3DSH_Sensor_1.Results.axis[AXIS_Y].CalcData >= 350){
    	   if(LIS3DSH_Sensor_1.Results.axis[AXIS_Y].sign == 1){
    		   HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
    		   HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_RESET);
@@ -421,7 +428,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : LIS3DSH_INT1_Pin */
   GPIO_InitStruct.Pin = LIS3DSH_INT1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(LIS3DSH_INT1_GPIO_Port, &GPIO_InitStruct);
 
@@ -444,7 +451,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   /* Prevent unused argument(s) compilation warning */
   if(GPIO_Pin == GPIO_PIN_0){
-	  callback.LIS3DSH_INTERRUPT_STATE = LIS3DSH_DATA_READY;
+	  LIS3DSH_Sensor_1.Interrupt.DataState = LIS3DSH_DATA_READY;
   }
   /* NOTE: This function Should not be modified, when the callback is needed,
            the HAL_GPIO_EXTI_Callback could be implemented in the user file

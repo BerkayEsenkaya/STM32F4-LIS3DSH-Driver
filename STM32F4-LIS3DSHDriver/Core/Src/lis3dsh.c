@@ -4,6 +4,7 @@
 #include<stdint.h>
 #include"main.h"
 #include"lis3dsh.h"
+
 #include"spi.h"
 
 /******************************************************************************
@@ -15,26 +16,22 @@
 /******************************************************************************
  *** VARIABLES
  ******************************************************************************/
-
-//LIS3DSH_RESULTS_T results;
-//LIS3DSH_SaveSetting_T save;
-
-
+//extern SPI_Handle_T SPI_1, SPI_2, SPI_3;
 /******************************************************************************
  *** FUNCTIONS
  ******************************************************************************/
 /** \brief
  */
-uint8_t LIS3DSH_Init(LIS3DSH_SENSOR_PARAM_T *handle){
+
+uint8_t LIS3DSH_Init(void *spiHandle, LIS3DSH_SENSOR_PARAM_T *handle){
 	uint8_t whoIam[1];
 	whoIam[0] = LIS3DSH_Read_Reg(handle, _LIS3DSH_REGADDR_WHOIAM, 1);
+	handle->COM.SPI_Handle = spiHandle;
 	if(whoIam[0] == _LIS3DSH_ID){  /* Communication is successful*/
 		LIS3DSH_AccalometerSoftReset(handle);
-        return _LIS3DSH_OK;
+        return _LIS3DSH_OK ;
 	}else{
-		while(1){
 
-		}
 	}
 }
 
@@ -45,7 +42,7 @@ uint16_t LIS3DSH_Read_Reg(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr,uint8_
 	uint8_t rxBuff[1];
 	txBuff[0] = RegAddr | LIS3DSH_SPIMODE_READ;
 
-	SPI_TransmitReceive(SPI_NO1, txBuff, rxBuff, 1, lenght);
+	SPI_TransmitReceive(SPI_NO_1, SPI_NODE1, txBuff, rxBuff, 1, lenght);
 	return rxBuff[0];
 }
 
@@ -60,7 +57,7 @@ uint8_t LIS3DSH_Write_Reg(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr, uint8
 	  txBuff[i] = data[i-1];
 	}
 
-    SPI_TransmitReceive(SPI_NO1, txBuff, NULL, lenght, 0);
+    SPI_TransmitReceive(SPI_NO_1, SPI_NODE1, txBuff, NULL, lenght, 0);
     return LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(handle, RegAddr, data);
 }
 
@@ -158,7 +155,10 @@ uint8_t LIS3DSH_CTRL_WRITE_DATA_IS_CORRECT(LIS3DSH_SENSOR_PARAM_T *handle, uint8
 	if(WrittenData[0] == rxBuff[0]){
 		return _LIS3DSH_OK;
 	}else{
-		return _LIS3DSH_NOT_OK;
+		while(1){
+
+		}
+		//return _LIS3DSH_NOT_OK;
 	}
 }
 
@@ -204,7 +204,7 @@ uint8_t LIS3DSH_Read_Temperature_Data(LIS3DSH_SENSOR_PARAM_T *handle){
 	if(handle->Results.DieTemperature.raw >= 0x80){
 		handle->Results.DieTemperature.raw = 0xFF - handle->Results.DieTemperature.raw + 1;
 	}
-	handle->Results.DieTemperature.celcius = 25 + (handle->Results.DieTemperature.raw/2);
+	handle->Results.DieTemperature.CalcData = 25 + (handle->Results.DieTemperature.raw/2);
 }
 
 /** \brief
@@ -224,6 +224,6 @@ uint8_t LIS3DSH_ConvertData(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t axis){
        break;
     }
 
-    handle->Results.axis[axis].mg = handle->Results.axis[axis].filtered * convertMltply;
-    handle->Results.axis[axis].mg = handle->Results.axis[axis].mg / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
+    handle->Results.axis[axis].CalcData = handle->Results.axis[axis].filtered * convertMltply;
+    handle->Results.axis[axis].CalcData = handle->Results.axis[axis].CalcData / _LIS3DSH_CONVERT_DATA_CONST_DIVIDER;
 }

@@ -1,3 +1,4 @@
-../Core/Src/spi.c:6:9:SPI_TransmitReceive	3
-../Core/Src/spi.c:20:9:SPI_Com_Active	1
-../Core/Src/spi.c:24:9:SPI_Com_Deactive	1
+../Core/Src/spi.c:6:9:SPI_Init	5
+../Core/Src/spi.c:18:9:SPI_TransmitReceive	6
+../Core/Src/spi.c:36:9:SPI_Com_Active	1
+../Core/Src/spi.c:40:9:SPI_Com_Deactive	1
