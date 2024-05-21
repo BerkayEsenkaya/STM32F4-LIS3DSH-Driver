@@ -43,7 +43,7 @@
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_Y 0x11
 #define _LIS3DSH_REGADDR_OFFSET_AXIS_Z 0x12
 
-#define _LIS3DSH_FILTERSIZE 10
+#define _LIS3DSH_FILTERSIZE 50
 
 #define AXIS_X 0
 #define AXIS_Y 1
@@ -55,14 +55,10 @@
 /******************************************************************************
  *** STRUCTS
  ******************************************************************************/
-typedef struct{
-	uint8_t SPI_CS_Port;
-	uint8_t SPI_CS_Pin;
-}LIS3DSH_SPI_Node_T;
 
 typedef struct{
-	void *SPI_Handle;
-	LIS3DSH_SPI_Node_T SPI_Node;
+	uint8_t SPI_No;
+	uint8_t SPI_Node;
 }LIS3DSH_Handle_T;
 
 typedef struct{
@@ -375,7 +371,7 @@ typedef struct{
  * \param  nothing.
  * \return nothing.
  */
-uint8_t LIS3DSH_Init(void *spiHandle, LIS3DSH_SENSOR_PARAM_T *handle);
+uint8_t LIS3DSH_Init(uint8_t spiNo, uint8_t spiNode, LIS3DSH_SENSOR_PARAM_T *handle);
 
 /** \brief Read the LIS3DSH registers value.
  * \param  RegAddr : Address of the register to be read.
@@ -383,7 +379,7 @@ uint8_t LIS3DSH_Init(void *spiHandle, LIS3DSH_SENSOR_PARAM_T *handle);
  * \param  lenght : lenght of the data which to be read from LIS3DSH registers.
  * \return nothing.
  */
-uint16_t LIS3DSH_Read_Reg(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr, uint8_t lenght);
+uint16_t LIS3DSH_Read_Reg(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr);
 
 /** \brief Write to the LIS3DSH registers.
  * \param  RegAddr : Address of the register to be write.
@@ -391,7 +387,7 @@ uint16_t LIS3DSH_Read_Reg(LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr, uint8
  * \param  lenght : lenght of the data which to be write to LIS3DSH registers.
  * \return nothing.
  */
-uint8_t LIS3DSH_Write_Reg( LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr, uint8_t *data,uint8_t lenght);
+uint8_t LIS3DSH_Write_Reg( LIS3DSH_SENSOR_PARAM_T *handle, uint8_t RegAddr, uint8_t data);
 
 /** \brief combines the entered settings appropriately and writes it to the CTRL1 register.
  * \param hys : Hysteresis unsigned value to be added or subtracted from threshold value in SM1.

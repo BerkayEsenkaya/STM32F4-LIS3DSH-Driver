@@ -57,8 +57,6 @@ LIS3DSH_SENSOR_PARAM_T LIS3DSH_Sensor_1;
 
 AverageFilterParam_T LIS3DSH_AverageFilter_X, LIS3DSH_AverageFilter_Y, LIS3DSH_AverageFilter_Z;
 
-extern SPI_Handle_T SPI_1, SPI_2, SPI_3 ;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -113,14 +111,15 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-  SPI_Init(&hspi1, SPI_NO_1, SPI_NODE1 ,CS_I2C_SPI_GPIO_Port , CS_I2C_SPI_Pin);
+  SPI_Init(&hspi1, SPI_NO_1, SPI_NODE_1 ,CS_I2C_SPI_GPIO_Port , CS_I2C_SPI_Pin);
   HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_SET);
+
   HAL_Delay(1000);
-  LIS3DSH_Init(SPI_1.handle ,&LIS3DSH_Sensor_1);
+  LIS3DSH_Init(SPI_NO_1, SPI_NODE_1, &LIS3DSH_Sensor_1);
 
   LIS3DSH_Reg_Set_Ctrl3(&LIS3DSH_Sensor_1, INT1_DATA_READY_SIGNAL_ENABLE, INT_SIGNAL_ACTIVE_HIGH, INT_SIGNAL_PULSE, INT2_DISABLE, INT1_ENABLE, VECTOR_FILT_DISABLE, SOFT_RESET_DISABLE);
   LIS3DSH_Reg_Set_Ctrl4(&LIS3DSH_Sensor_1, DATARATE_HZ_3,DATA_CONT_UPDATE , AXIS_X_ENABLE, AXIS_Y_ENABLE, AXIS_Z_ENABLE);
-  LIS3DSH_Reg_Set_Ctrl5(&LIS3DSH_Sensor_1, ANTIALIASING_FILTER_BANDWIDTH_HZ_800, SCALE_SELECT_4G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
+  LIS3DSH_Reg_Set_Ctrl5(&LIS3DSH_Sensor_1, ANTIALIASING_FILTER_BANDWIDTH_HZ_50, SCALE_SELECT_2G,NORMAL_MODE , SPI_INTERFACE_4WIRE);
   LIS3DSH_Reg_Set_Ctrl6(&LIS3DSH_Sensor_1, BOOT_DISABLE, FIFO_DISABLE, FIFO_WATERMARK_LEVEL_DISABLE, REG_ADDR_AUTO_INCREMENT_DISABLE, FIFO_EMPTY_INDICATION_DISABLE, FIFO_WATERMARK_INT_DISABLE, FIFO_OVERRUN_INT_DISABLE, BOOT_INT_DISABLE);
 
   /* USER CODE END 2 */
@@ -141,6 +140,7 @@ int main(void)
 */
    LIS3DSH_Read_Accmeter_Data(&LIS3DSH_Sensor_1);
    LIS3DSH_Read_Temperature_Data(&LIS3DSH_Sensor_1);
+
    LIS3DSH_Sensor_1.Results.axis[AXIS_X].filtered = AverageFilter(&LIS3DSH_AverageFilter_X, LIS3DSH_Sensor_1.Results.axis[AXIS_X].raw, _LIS3DSH_FILTERSIZE);
    LIS3DSH_Sensor_1.Results.axis[AXIS_Y].filtered = AverageFilter(&LIS3DSH_AverageFilter_Y, LIS3DSH_Sensor_1.Results.axis[AXIS_Y].raw, _LIS3DSH_FILTERSIZE);
    LIS3DSH_Sensor_1.Results.axis[AXIS_Z].filtered = AverageFilter(&LIS3DSH_AverageFilter_Z, LIS3DSH_Sensor_1.Results.axis[AXIS_Z].raw, _LIS3DSH_FILTERSIZE);

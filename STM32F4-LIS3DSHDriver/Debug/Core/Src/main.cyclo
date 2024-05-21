@@ -1,4 +1,4 @@
-../Core/Src/main.c:84:5:main	5
+../Core/Src/main.c:82:5:main	5
 ../Core/Src/main.c:186:6:SystemClock_Config	3
 ../Core/Src/main.c:231:13:MX_NVIC_Init	1
 ../Core/Src/main.c:243:13:MX_I2S3_Init	2

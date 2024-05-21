@@ -5,9 +5,9 @@
 #define SPI_NO_2 2
 #define SPI_NO_3 3
 
-#define SPI_NODE1 1
-#define SPI_NODE2 2
-#define SPI_NODE3 3
+#define SPI_NODE_1 1
+#define SPI_NODE_2 2
+#define SPI_NODE_3 3
 
 #define SPI_NODE_MAX 10
 
